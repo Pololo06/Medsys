@@ -94,6 +94,19 @@ class AppointmentRepositoryTest extends AbstractRepositoryIT {
     }
 
     @Test
+    @DisplayName("Find appointments by date range")
+    void shouldFindByStartTimeBetween() {
+        var now = LocalDateTime.now();
+        createAppointment(AppointmentStatus.SCHEDULED, now, now.plusMinutes(30));
+
+        var result = appointmentRepository.findByStartTimeBetween(
+                now.minusHours(1), now.plusHours(1)
+        );
+
+        assertThat(result).hasSize(1);
+    }
+
+    @Test
     @DisplayName("Create appointment")
     void shouldCreateAppointment() {
         var now = LocalDateTime.now();
