@@ -25,6 +25,8 @@ public class Appointment {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AppointmentStatus status;
+    @Column(name = "cancellation_reason")
+    private String cancellationReason;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "patient_id")
@@ -41,12 +43,6 @@ public class Appointment {
     @ManyToOne(optional = false)
     @JoinColumn(name = "appointment_type_id")
     private AppointmentType appointmentType;
-
-    @Column(name = "cancellation_reason")
-    private String cancellationReason;
-
-    @Column(name = "notes")
-    private String notes;
 
     @Column(name = "created_at",nullable = false) private Instant createdAt;
     @Column(name = "updated_at",nullable = false) private Instant updatedAt;

@@ -28,7 +28,10 @@ class AppointmentRepositoryTest extends AbstractRepositoryIT {
     @Autowired
     AppointmentTypeRepository appointmentTypeRepository;
 
-    private Appointment createAppointment(AppointmentStatus status, LocalDateTime start, LocalDateTime end) {
+    private Appointment createAppointment(AppointmentStatus status,
+                                          LocalDateTime start,
+                                          LocalDateTime end,
+                                          String cancellationReason) {
 
         var specialty = specialtyRepository.save(
                 Specialty.builder()
@@ -51,7 +54,7 @@ class AppointmentRepositoryTest extends AbstractRepositoryIT {
         var patient = patientRepository.save(
                 Patient.builder()
                         .fullName("Carlos Torres")
-                        .email("test" + Math.random() + "@gmail.com")
+                        .email("carlostorres" + Math.random() + "@gmail.com")
                         .phone("3000000000")
                         .status(PatientStatus.ACTIVE)
                         .createdAt(Instant.now())
@@ -83,6 +86,7 @@ class AppointmentRepositoryTest extends AbstractRepositoryIT {
                         .startTime(start)
                         .endTime(end)
                         .status(status)
+                        .cancellationReason(cancellationReason)
                         .doctor(doctor)
                         .patient(patient)
                         .office(office)
@@ -93,17 +97,12 @@ class AppointmentRepositoryTest extends AbstractRepositoryIT {
         );
     }
 
-    @Test
-    @DisplayName("Find appointments by date range")
-    void shouldFindByStartTimeBetween() {
-        var now = LocalDateTime.now();
-        createAppointment(AppointmentStatus.SCHEDULED, now, now.plusMinutes(30));
-
-        var result = appointmentRepository.findByStartTimeBetween(
-                now.minusHours(1), now.plusHours(1)
-        );
-
-        assertThat(result).hasSize(1);
+    private Appointment createAppointment(
+            AppointmentStatus status,
+            LocalDateTime start,
+            LocalDateTime end
+    ) {
+        return createAppointment(status, start, end, null);
     }
 
     @Test
@@ -114,8 +113,7 @@ class AppointmentRepositoryTest extends AbstractRepositoryIT {
         var appointment = createAppointment(
                 AppointmentStatus.SCHEDULED,
                 now,
-                now.plusMinutes(30)
-        );
+                now.plusMinutes(30));
 
         assertThat(appointment.getId()).isNotNull();
     }
@@ -128,13 +126,11 @@ class AppointmentRepositoryTest extends AbstractRepositoryIT {
         var appointment = createAppointment(
                 AppointmentStatus.CONFIRMED,
                 now,
-                now.plusMinutes(30)
-        );
+                now.plusMinutes(30));
 
         var result = appointmentRepository.findByPatientIdAndStatus(
                 appointment.getPatient().getId(),
-                AppointmentStatus.CONFIRMED
-        );
+                AppointmentStatus.CONFIRMED);
 
         assertThat(result).hasSize(1);
     }
@@ -147,14 +143,12 @@ class AppointmentRepositoryTest extends AbstractRepositoryIT {
         var appointment = createAppointment(
                 AppointmentStatus.SCHEDULED,
                 now,
-                now.plusMinutes(30)
-        );
+                now.plusMinutes(30));
 
         boolean overlap = appointmentRepository.existsDoctorOverlap(
                 appointment.getDoctor().getId(),
                 now.plusMinutes(10),
-                now.plusMinutes(40)
-        );
+                now.plusMinutes(40));
 
         assertThat(overlap).isTrue();
     }
@@ -167,14 +161,12 @@ class AppointmentRepositoryTest extends AbstractRepositoryIT {
         var appointment = createAppointment(
                 AppointmentStatus.SCHEDULED,
                 now,
-                now.plusMinutes(30)
-        );
+                now.plusMinutes(30));
 
         boolean overlap = appointmentRepository.existsOfficeOverlap(
                 appointment.getOffice().getId(),
                 now.plusMinutes(5),
-                now.plusMinutes(35)
-        );
+                now.plusMinutes(35));
 
         assertThat(overlap).isTrue();
     }
@@ -187,14 +179,12 @@ class AppointmentRepositoryTest extends AbstractRepositoryIT {
         var appointment = createAppointment(
                 AppointmentStatus.SCHEDULED,
                 now,
-                now.plusMinutes(30)
-        );
+                now.plusMinutes(30));
 
         var result = appointmentRepository.findAppointmentsByDoctorAndDay(
                 appointment.getDoctor().getId(),
                 now.minusHours(1),
-                now.plusHours(1)
-        );
+                now.plusHours(1));
 
         assertThat(result).hasSize(1);
     }
@@ -208,8 +198,7 @@ class AppointmentRepositoryTest extends AbstractRepositoryIT {
 
         var result = appointmentRepository.countAppointmentsByOffice(
                 now.minusHours(1),
-                now.plusHours(1)
-        );
+                now.plusHours(1));
 
         assertThat(result).isNotEmpty();
     }
@@ -235,8 +224,7 @@ class AppointmentRepositoryTest extends AbstractRepositoryIT {
 
         var result = appointmentRepository.topNoShowPatients(
                 now.minusHours(1),
-                now.plusHours(1)
-        );
+                now.plusHours(1));
 
         assertThat(result).isNotEmpty();
     }
@@ -246,10 +234,59 @@ class AppointmentRepositoryTest extends AbstractRepositoryIT {
     void shouldCountCancelledAndNoShowBySpecialty() {
         var now = LocalDateTime.now();
 
-        createAppointment(AppointmentStatus.CANCELLED, now, now.plusMinutes(30));
+        createAppointment(AppointmentStatus.CANCELLED, now, now.plusMinutes(30)
+                , "Cancelada por motivos personales");
 
         var result = appointmentRepository.countCancelledAndNoShowBySpecialty();
 
         assertThat(result).isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("Find appointments by date range")
+    void shouldFindByStartTimeBetween() {
+        var now = LocalDateTime.now();
+        createAppointment(AppointmentStatus.SCHEDULED, now, now.plusMinutes(30));
+
+        var result = appointmentRepository.findByStartTimeBetween(
+                now.minusHours(1), now.plusHours(1));
+
+        assertThat(result).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("Update appointment")
+    void shouldUpdateAppointment() {
+        var now = LocalDateTime.now();
+
+        var appointment = createAppointment(
+                AppointmentStatus.SCHEDULED,
+                now,
+                now.plusMinutes(30));
+
+        appointment.setStatus(AppointmentStatus.CONFIRMED);
+        appointmentRepository.save(appointment);
+
+        var updated = appointmentRepository.findById(appointment.getId());
+
+        assertThat(updated).isPresent();
+        assertThat(updated.get().getStatus()).isEqualTo(AppointmentStatus.CONFIRMED);
+    }
+
+    @Test
+    @DisplayName("Delete appointment")
+    void shouldDeleteAppointment() {
+        var now = LocalDateTime.now();
+
+        var appointment = createAppointment(
+                AppointmentStatus.SCHEDULED,
+                now,
+                now.plusMinutes(30));
+
+        appointmentRepository.deleteById(appointment.getId());
+
+        var deleted = appointmentRepository.findById(appointment.getId());
+
+        assertThat(deleted).isNotPresent();
     }
 }
