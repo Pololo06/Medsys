@@ -42,12 +42,10 @@ public class DoctorScheduleServiceImpl implements DoctorScheduleService {
     @Override
     @Transactional(readOnly = true)
     public List<DoctorScheduleResponse> findByDoctor(UUID doctorId) {
-        return doctorScheduleRepository.findAll().stream()
-                .filter(s -> s.getDoctor().getId().equals(doctorId))
+        return doctorScheduleRepository.findByDoctorId(doctorId).stream()
                 .map(DoctorScheduleMapper::toResponse)
                 .toList();
     }
-
     @Override
     @Transactional(readOnly = true)
     public List<DoctorScheduleResponse> findByDoctorAndDay(UUID doctorId, DayOfWeek day) {

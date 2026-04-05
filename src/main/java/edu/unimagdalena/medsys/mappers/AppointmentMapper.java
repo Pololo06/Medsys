@@ -22,7 +22,7 @@ public class AppointmentMapper {
                 appointment.getAppointmentType().getId(),
                 appointment.getAppointmentType().getName(),
                 appointment.getCancellationReason(),
-                appointment.getNotes()
+                appointment.getObservation()
         );
     }
 }

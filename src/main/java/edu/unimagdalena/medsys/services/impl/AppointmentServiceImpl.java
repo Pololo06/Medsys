@@ -172,7 +172,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new BusinessException("Cannot complete an appointment before its scheduled start time");
         }
         appointment.setStatus(AppointmentStatus.COMPLETED);
-        appointment.setNotes(req.notes());
+        appointment.setObservation(req.notes());
         appointment.setUpdatedAt(Instant.now());
         return AppointmentMapper.toResponse(appointmentRepository.save(appointment));
     }

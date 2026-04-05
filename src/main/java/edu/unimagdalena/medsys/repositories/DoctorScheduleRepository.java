@@ -9,4 +9,5 @@ import java.util.UUID;
 
 public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, UUID> {
     List<DoctorSchedule> findByDoctorIdAndDay(UUID doctorId, DayOfWeek day);
+    List<DoctorSchedule> findByDoctorId(UUID doctorId);
 }

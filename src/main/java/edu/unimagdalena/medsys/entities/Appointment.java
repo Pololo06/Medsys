@@ -27,6 +27,7 @@ public class Appointment {
     private AppointmentStatus status;
     @Column(name = "cancellation_reason")
     private String cancellationReason;
+    private String observation;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "patient_id")
