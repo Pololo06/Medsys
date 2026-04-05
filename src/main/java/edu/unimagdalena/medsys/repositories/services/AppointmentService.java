@@ -1,0 +1,19 @@
+package edu.unimagdalena.medsys.repositories.services;
+
+import edu.unimagdalena.medsys.dto.request.CancelAppointmentRequest;
+import edu.unimagdalena.medsys.dto.request.CompleteAppointmentRequest;
+import edu.unimagdalena.medsys.dto.request.CreateAppointmentRequest;
+import edu.unimagdalena.medsys.dto.response.AppointmentResponse;
+
+import java.util.List;
+import java.util.UUID;
+
+public interface AppointmentService {
+    AppointmentResponse create(CreateAppointmentRequest req);
+    AppointmentResponse findById(UUID id);
+    List<AppointmentResponse> findAll();
+    AppointmentResponse confirm(UUID id);
+    AppointmentResponse cancel(UUID id, CancelAppointmentRequest req);
+    AppointmentResponse complete(UUID id, CompleteAppointmentRequest req);
+    AppointmentResponse markNoShow(UUID id);
+}

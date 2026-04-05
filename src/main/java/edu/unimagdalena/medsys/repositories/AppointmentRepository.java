@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, UUID> {
+
     List<Appointment> findByPatientIdAndStatus(UUID patientId, AppointmentStatus status);
 
     List<Appointment> findByStartTimeBetween(LocalDateTime startTime, LocalDateTime endTime);
@@ -17,7 +18,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     @Query("""
     SELECT a.doctor.specialty.id, COUNT(a)
     FROM Appointment a
-    WHERE a.status IN ('CANCELLED', 'NO_SHOW')
+    WHERE a.status IN (
+        edu.unimagdalena.medsys.enums.AppointmentStatus.CANCELLED,
+        edu.unimagdalena.medsys.enums.AppointmentStatus.NO_SHOW
+    )
     GROUP BY a.doctor.specialty.id
     """)
     List<Object[]> countCancelledAndNoShowBySpecialty();
@@ -25,7 +29,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     @Query("""
     SELECT a.doctor.id, COUNT(a)
     FROM Appointment a
-    WHERE a.status = 'COMPLETED'
+    WHERE a.status = edu.unimagdalena.medsys.enums.AppointmentStatus.COMPLETED
     GROUP BY a.doctor.id
     ORDER BY COUNT(a) DESC
     """)
@@ -34,7 +38,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     @Query("""
     SELECT a.patient.id, COUNT(a)
     FROM Appointment a
-    WHERE a.status = 'NO_SHOW'
+    WHERE a.status = edu.unimagdalena.medsys.enums.AppointmentStatus.NO_SHOW
     AND a.startTime BETWEEN :start AND :end
     GROUP BY a.patient.id
     ORDER BY COUNT(a) DESC
@@ -42,22 +46,43 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     List<Object[]> topNoShowPatients(LocalDateTime start, LocalDateTime end);
 
     @Query("""
-    SELECT COUNT(a) > 0 
+    SELECT COUNT(a) > 0
     FROM Appointment a
     WHERE a.doctor.id = :doctorId
+    AND a.status IN (
+        edu.unimagdalena.medsys.enums.AppointmentStatus.SCHEDULED,
+        edu.unimagdalena.medsys.enums.AppointmentStatus.CONFIRMED
+    )
     AND a.startTime < :end
     AND a.endTime > :start
     """)
     boolean existsDoctorOverlap(UUID doctorId, LocalDateTime start, LocalDateTime end);
 
     @Query("""
-    SELECT COUNT(a) > 0 
+    SELECT COUNT(a) > 0
     FROM Appointment a
     WHERE a.office.id = :officeId
+    AND a.status IN (
+        edu.unimagdalena.medsys.enums.AppointmentStatus.SCHEDULED,
+        edu.unimagdalena.medsys.enums.AppointmentStatus.CONFIRMED
+    )
     AND a.startTime < :end
     AND a.endTime > :start
     """)
     boolean existsOfficeOverlap(UUID officeId, LocalDateTime start, LocalDateTime end);
+
+    @Query("""
+    SELECT COUNT(a) > 0
+    FROM Appointment a
+    WHERE a.patient.id = :patientId
+    AND a.status IN (
+        edu.unimagdalena.medsys.enums.AppointmentStatus.SCHEDULED,
+        edu.unimagdalena.medsys.enums.AppointmentStatus.CONFIRMED
+    )
+    AND a.startTime < :end
+    AND a.endTime > :start
+    """)
+    boolean existsPatientOverlap(UUID patientId, LocalDateTime start, LocalDateTime end);
 
     @Query("""
     SELECT a.office.id, COUNT(a)
@@ -66,6 +91,17 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     GROUP BY a.office.id
     """)
     List<Object[]> countAppointmentsByOffice(LocalDateTime start, LocalDateTime end);
+
+    @Query("""
+    SELECT a FROM Appointment a
+    WHERE a.doctor.id = :doctorId
+    AND a.status IN (
+        edu.unimagdalena.medsys.enums.AppointmentStatus.SCHEDULED,
+        edu.unimagdalena.medsys.enums.AppointmentStatus.CONFIRMED
+    )
+    AND a.startTime BETWEEN :start AND :end
+    """)
+    List<Appointment> findActiveAppointmentsByDoctorAndDay(UUID doctorId, LocalDateTime start, LocalDateTime end);
 
     @Query("""
     SELECT a FROM Appointment a

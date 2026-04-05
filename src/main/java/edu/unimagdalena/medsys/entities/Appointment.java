@@ -42,6 +42,12 @@ public class Appointment {
     @JoinColumn(name = "appointment_type_id")
     private AppointmentType appointmentType;
 
+    @Column(name = "cancellation_reason")
+    private String cancellationReason;
+
+    @Column(name = "notes")
+    private String notes;
+
     @Column(name = "created_at",nullable = false) private Instant createdAt;
     @Column(name = "updated_at",nullable = false) private Instant updatedAt;
 }
