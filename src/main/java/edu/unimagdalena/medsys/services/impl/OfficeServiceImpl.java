@@ -1,12 +1,12 @@
 package edu.unimagdalena.medsys.services.impl;
 
-import edu.unimagdalena.medsys.dto.request.CreateOfficeRequest;
-import edu.unimagdalena.medsys.dto.request.UpdateOfficeRequest;
-import edu.unimagdalena.medsys.dto.response.OfficeResponse;
-import edu.unimagdalena.medsys.enums.OfficeStatus;
+import edu.unimagdalena.medsys.api.dto.request.CreateOfficeRequest;
+import edu.unimagdalena.medsys.api.dto.request.UpdateOfficeRequest;
+import edu.unimagdalena.medsys.api.dto.response.OfficeResponse;
+import edu.unimagdalena.medsys.domain.enums.OfficeStatus;
 import edu.unimagdalena.medsys.exceptions.ResourceNotFoundException;
-import edu.unimagdalena.medsys.mappers.OfficeMapper;
-import edu.unimagdalena.medsys.repositories.OfficeRepository;
+import edu.unimagdalena.medsys.services.mappers.OfficeMapper;
+import edu.unimagdalena.medsys.domain.repositories.OfficeRepository;
 import edu.unimagdalena.medsys.services.OfficeService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

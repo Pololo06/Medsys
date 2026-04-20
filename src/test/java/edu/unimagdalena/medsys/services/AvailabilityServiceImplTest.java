@@ -1,12 +1,15 @@
 package edu.unimagdalena.medsys.services;
 
-import edu.unimagdalena.medsys.dto.response.AvailabilitySlotResponse;
-import edu.unimagdalena.medsys.entities.*;
-import edu.unimagdalena.medsys.enums.AppointmentStatus;
+import edu.unimagdalena.medsys.api.dto.response.AvailabilitySlotResponse;
+import edu.unimagdalena.medsys.domain.entities.Appointment;
+import edu.unimagdalena.medsys.domain.entities.Doctor;
+import edu.unimagdalena.medsys.domain.entities.DoctorSchedule;
+import edu.unimagdalena.medsys.domain.entities.Specialty;
+import edu.unimagdalena.medsys.domain.enums.AppointmentStatus;
 import edu.unimagdalena.medsys.exceptions.ResourceNotFoundException;
-import edu.unimagdalena.medsys.repositories.AppointmentRepository;
-import edu.unimagdalena.medsys.repositories.DoctorRepository;
-import edu.unimagdalena.medsys.repositories.DoctorScheduleRepository;
+import edu.unimagdalena.medsys.domain.repositories.AppointmentRepository;
+import edu.unimagdalena.medsys.domain.repositories.DoctorRepository;
+import edu.unimagdalena.medsys.domain.repositories.DoctorScheduleRepository;
 import edu.unimagdalena.medsys.services.impl.AvailabilityServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

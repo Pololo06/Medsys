@@ -1,7 +1,7 @@
 package edu.unimagdalena.medsys.services;
 
-import edu.unimagdalena.medsys.dto.request.CreateAppointmentTypeRequest;
-import edu.unimagdalena.medsys.dto.response.AppointmentTypeResponse;
+import edu.unimagdalena.medsys.api.dto.request.CreateAppointmentTypeRequest;
+import edu.unimagdalena.medsys.api.dto.response.AppointmentTypeResponse;
 
 import java.util.List;
 import java.util.UUID;

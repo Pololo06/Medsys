@@ -1,6 +1,7 @@
 package edu.unimagdalena.medsys.repositories;
 
-import edu.unimagdalena.medsys.entities.Specialty;
+import edu.unimagdalena.medsys.domain.entities.Specialty;
+import edu.unimagdalena.medsys.domain.repositories.SpecialtyRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

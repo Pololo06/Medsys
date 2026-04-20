@@ -1,7 +1,8 @@
 package edu.unimagdalena.medsys.repositories;
 
-import edu.unimagdalena.medsys.entities.Office;
-import edu.unimagdalena.medsys.enums.OfficeStatus;
+import edu.unimagdalena.medsys.domain.entities.Office;
+import edu.unimagdalena.medsys.domain.repositories.OfficeRepository;
+import edu.unimagdalena.medsys.domain.enums.OfficeStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

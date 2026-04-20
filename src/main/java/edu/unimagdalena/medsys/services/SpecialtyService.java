@@ -1,7 +1,7 @@
 package edu.unimagdalena.medsys.services;
 
-import edu.unimagdalena.medsys.dto.request.CreateSpecialtyRequest;
-import edu.unimagdalena.medsys.dto.response.SpecialtyResponse;
+import edu.unimagdalena.medsys.api.dto.request.CreateSpecialtyRequest;
+import edu.unimagdalena.medsys.api.dto.response.SpecialtyResponse;
 
 import java.util.List;
 import java.util.UUID;

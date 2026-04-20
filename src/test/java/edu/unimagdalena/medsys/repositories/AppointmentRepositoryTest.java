@@ -1,9 +1,10 @@
 package edu.unimagdalena.medsys.repositories;
 
-import edu.unimagdalena.medsys.entities.*;
-import edu.unimagdalena.medsys.enums.AppointmentStatus;
-import edu.unimagdalena.medsys.enums.OfficeStatus;
-import edu.unimagdalena.medsys.enums.PatientStatus;
+import edu.unimagdalena.medsys.domain.entities.*;
+import edu.unimagdalena.medsys.domain.repositories.*;
+import edu.unimagdalena.medsys.domain.enums.AppointmentStatus;
+import edu.unimagdalena.medsys.domain.enums.OfficeStatus;
+import edu.unimagdalena.medsys.domain.enums.PatientStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

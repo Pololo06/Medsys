@@ -1,12 +1,12 @@
 package edu.unimagdalena.medsys.services.impl;
 
-import edu.unimagdalena.medsys.dto.request.CreatePatientRequest;
-import edu.unimagdalena.medsys.dto.request.UpdatePatientRequest;
-import edu.unimagdalena.medsys.dto.response.PatientResponse;
-import edu.unimagdalena.medsys.enums.PatientStatus;
+import edu.unimagdalena.medsys.api.dto.request.CreatePatientRequest;
+import edu.unimagdalena.medsys.api.dto.request.UpdatePatientRequest;
+import edu.unimagdalena.medsys.api.dto.response.PatientResponse;
+import edu.unimagdalena.medsys.domain.enums.PatientStatus;
 import edu.unimagdalena.medsys.exceptions.ResourceNotFoundException;
-import edu.unimagdalena.medsys.mappers.PatientMapper;
-import edu.unimagdalena.medsys.repositories.PatientRepository;
+import edu.unimagdalena.medsys.services.mappers.PatientMapper;
+import edu.unimagdalena.medsys.domain.repositories.PatientRepository;
 import edu.unimagdalena.medsys.services.PatientService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

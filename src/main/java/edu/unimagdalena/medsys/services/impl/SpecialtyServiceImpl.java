@@ -1,10 +1,10 @@
 package edu.unimagdalena.medsys.services.impl;
 
-import edu.unimagdalena.medsys.dto.request.CreateSpecialtyRequest;
-import edu.unimagdalena.medsys.dto.response.SpecialtyResponse;
+import edu.unimagdalena.medsys.api.dto.request.CreateSpecialtyRequest;
+import edu.unimagdalena.medsys.api.dto.response.SpecialtyResponse;
 import edu.unimagdalena.medsys.exceptions.ResourceNotFoundException;
-import edu.unimagdalena.medsys.mappers.SpecialtyMapper;
-import edu.unimagdalena.medsys.repositories.SpecialtyRepository;
+import edu.unimagdalena.medsys.services.mappers.SpecialtyMapper;
+import edu.unimagdalena.medsys.domain.repositories.SpecialtyRepository;
 import edu.unimagdalena.medsys.services.SpecialtyService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

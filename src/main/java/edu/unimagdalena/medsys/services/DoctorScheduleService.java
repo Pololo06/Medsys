@@ -1,7 +1,7 @@
 package edu.unimagdalena.medsys.services;
 
-import edu.unimagdalena.medsys.dto.request.CreateDoctorScheduleRequest;
-import edu.unimagdalena.medsys.dto.response.DoctorScheduleResponse;
+import edu.unimagdalena.medsys.api.dto.request.CreateDoctorScheduleRequest;
+import edu.unimagdalena.medsys.api.dto.response.DoctorScheduleResponse;
 
 import java.time.DayOfWeek;
 import java.util.List;

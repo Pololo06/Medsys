@@ -1,16 +1,16 @@
 package edu.unimagdalena.medsys.services;
 
-import edu.unimagdalena.medsys.dto.request.CancelAppointmentRequest;
-import edu.unimagdalena.medsys.dto.request.CompleteAppointmentRequest;
-import edu.unimagdalena.medsys.dto.request.CreateAppointmentRequest;
-import edu.unimagdalena.medsys.entities.*;
-import edu.unimagdalena.medsys.enums.AppointmentStatus;
-import edu.unimagdalena.medsys.enums.OfficeStatus;
-import edu.unimagdalena.medsys.enums.PatientStatus;
+import edu.unimagdalena.medsys.api.dto.request.CancelAppointmentRequest;
+import edu.unimagdalena.medsys.api.dto.request.CompleteAppointmentRequest;
+import edu.unimagdalena.medsys.api.dto.request.CreateAppointmentRequest;
+import edu.unimagdalena.medsys.domain.entities.*;
+import edu.unimagdalena.medsys.domain.repositories.*;
+import edu.unimagdalena.medsys.domain.enums.AppointmentStatus;
+import edu.unimagdalena.medsys.domain.enums.OfficeStatus;
+import edu.unimagdalena.medsys.domain.enums.PatientStatus;
 import edu.unimagdalena.medsys.exceptions.BusinessException;
 import edu.unimagdalena.medsys.exceptions.ConflictException;
 import edu.unimagdalena.medsys.exceptions.ResourceNotFoundException;
-import edu.unimagdalena.medsys.repositories.*;
 import edu.unimagdalena.medsys.services.impl.AppointmentServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,11 +33,16 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class AppointmentServiceImplTest {
 
-    @Mock AppointmentRepository appointmentRepository;
-    @Mock PatientRepository patientRepository;
-    @Mock DoctorRepository doctorRepository;
-    @Mock OfficeRepository officeRepository;
-    @Mock AppointmentTypeRepository appointmentTypeRepository;
+    @Mock
+    AppointmentRepository appointmentRepository;
+    @Mock
+    PatientRepository patientRepository;
+    @Mock
+    DoctorRepository doctorRepository;
+    @Mock
+    OfficeRepository officeRepository;
+    @Mock
+    AppointmentTypeRepository appointmentTypeRepository;
     @Mock DoctorScheduleRepository doctorScheduleRepository;
 
     @InjectMocks

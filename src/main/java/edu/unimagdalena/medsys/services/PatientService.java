@@ -1,8 +1,8 @@
 package edu.unimagdalena.medsys.services;
 
-import edu.unimagdalena.medsys.dto.request.CreatePatientRequest;
-import edu.unimagdalena.medsys.dto.request.UpdatePatientRequest;
-import edu.unimagdalena.medsys.dto.response.PatientResponse;
+import edu.unimagdalena.medsys.api.dto.request.CreatePatientRequest;
+import edu.unimagdalena.medsys.api.dto.request.UpdatePatientRequest;
+import edu.unimagdalena.medsys.api.dto.response.PatientResponse;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,11 +1,11 @@
 package edu.unimagdalena.medsys.services.impl;
 
-import edu.unimagdalena.medsys.dto.request.CreateDoctorScheduleRequest;
-import edu.unimagdalena.medsys.dto.response.DoctorScheduleResponse;
+import edu.unimagdalena.medsys.api.dto.request.CreateDoctorScheduleRequest;
+import edu.unimagdalena.medsys.api.dto.response.DoctorScheduleResponse;
 import edu.unimagdalena.medsys.exceptions.ResourceNotFoundException;
-import edu.unimagdalena.medsys.mappers.DoctorScheduleMapper;
-import edu.unimagdalena.medsys.repositories.DoctorRepository;
-import edu.unimagdalena.medsys.repositories.DoctorScheduleRepository;
+import edu.unimagdalena.medsys.services.mappers.DoctorScheduleMapper;
+import edu.unimagdalena.medsys.domain.repositories.DoctorRepository;
+import edu.unimagdalena.medsys.domain.repositories.DoctorScheduleRepository;
 import edu.unimagdalena.medsys.services.DoctorScheduleService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

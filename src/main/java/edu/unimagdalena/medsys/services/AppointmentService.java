@@ -1,9 +1,9 @@
 package edu.unimagdalena.medsys.services;
 
-import edu.unimagdalena.medsys.dto.request.CancelAppointmentRequest;
-import edu.unimagdalena.medsys.dto.request.CompleteAppointmentRequest;
-import edu.unimagdalena.medsys.dto.request.CreateAppointmentRequest;
-import edu.unimagdalena.medsys.dto.response.AppointmentResponse;
+import edu.unimagdalena.medsys.api.dto.request.CancelAppointmentRequest;
+import edu.unimagdalena.medsys.api.dto.request.CompleteAppointmentRequest;
+import edu.unimagdalena.medsys.api.dto.request.CreateAppointmentRequest;
+import edu.unimagdalena.medsys.api.dto.response.AppointmentResponse;
 
 import java.util.List;
 import java.util.UUID;

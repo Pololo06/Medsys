@@ -1,16 +1,15 @@
 package edu.unimagdalena.medsys.services.impl;
 
-import edu.unimagdalena.medsys.dto.response.AvailabilitySlotResponse;
+import edu.unimagdalena.medsys.api.dto.response.AvailabilitySlotResponse;
 import edu.unimagdalena.medsys.exceptions.ResourceNotFoundException;
-import edu.unimagdalena.medsys.repositories.AppointmentRepository;
-import edu.unimagdalena.medsys.repositories.DoctorRepository;
-import edu.unimagdalena.medsys.repositories.DoctorScheduleRepository;
+import edu.unimagdalena.medsys.domain.repositories.AppointmentRepository;
+import edu.unimagdalena.medsys.domain.repositories.DoctorRepository;
+import edu.unimagdalena.medsys.domain.repositories.DoctorScheduleRepository;
 import edu.unimagdalena.medsys.services.AvailabilityService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;

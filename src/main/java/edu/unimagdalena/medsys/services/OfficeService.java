@@ -1,8 +1,8 @@
 package edu.unimagdalena.medsys.services;
 
-import edu.unimagdalena.medsys.dto.request.CreateOfficeRequest;
-import edu.unimagdalena.medsys.dto.request.UpdateOfficeRequest;
-import edu.unimagdalena.medsys.dto.response.OfficeResponse;
+import edu.unimagdalena.medsys.api.dto.request.CreateOfficeRequest;
+import edu.unimagdalena.medsys.api.dto.request.UpdateOfficeRequest;
+import edu.unimagdalena.medsys.api.dto.response.OfficeResponse;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,10 +1,10 @@
 package edu.unimagdalena.medsys.services.impl;
 
-import edu.unimagdalena.medsys.dto.request.CreateAppointmentTypeRequest;
-import edu.unimagdalena.medsys.dto.response.AppointmentTypeResponse;
+import edu.unimagdalena.medsys.api.dto.request.CreateAppointmentTypeRequest;
+import edu.unimagdalena.medsys.api.dto.response.AppointmentTypeResponse;
 import edu.unimagdalena.medsys.exceptions.ResourceNotFoundException;
-import edu.unimagdalena.medsys.mappers.AppointmentTypeMapper;
-import edu.unimagdalena.medsys.repositories.AppointmentTypeRepository;
+import edu.unimagdalena.medsys.services.mappers.AppointmentTypeMapper;
+import edu.unimagdalena.medsys.domain.repositories.AppointmentTypeRepository;
 import edu.unimagdalena.medsys.services.AppointmentTypeService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

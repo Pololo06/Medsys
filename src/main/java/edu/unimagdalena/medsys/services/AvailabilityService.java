@@ -1,6 +1,6 @@
 package edu.unimagdalena.medsys.services;
 
-import edu.unimagdalena.medsys.dto.response.AvailabilitySlotResponse;
+import edu.unimagdalena.medsys.api.dto.response.AvailabilitySlotResponse;
 
 import java.time.LocalDate;
 import java.util.List;

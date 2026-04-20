@@ -1,13 +1,13 @@
 package edu.unimagdalena.medsys.services;
 
-import edu.unimagdalena.medsys.dto.request.CreateDoctorScheduleRequest;
-import edu.unimagdalena.medsys.dto.response.DoctorScheduleResponse;
-import edu.unimagdalena.medsys.entities.Doctor;
-import edu.unimagdalena.medsys.entities.DoctorSchedule;
-import edu.unimagdalena.medsys.entities.Specialty;
+import edu.unimagdalena.medsys.api.dto.request.CreateDoctorScheduleRequest;
+import edu.unimagdalena.medsys.api.dto.response.DoctorScheduleResponse;
+import edu.unimagdalena.medsys.domain.entities.Doctor;
+import edu.unimagdalena.medsys.domain.entities.DoctorSchedule;
+import edu.unimagdalena.medsys.domain.entities.Specialty;
 import edu.unimagdalena.medsys.exceptions.ResourceNotFoundException;
-import edu.unimagdalena.medsys.repositories.DoctorRepository;
-import edu.unimagdalena.medsys.repositories.DoctorScheduleRepository;
+import edu.unimagdalena.medsys.domain.repositories.DoctorRepository;
+import edu.unimagdalena.medsys.domain.repositories.DoctorScheduleRepository;
 import edu.unimagdalena.medsys.services.impl.DoctorScheduleServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

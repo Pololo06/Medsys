@@ -1,7 +1,8 @@
 package edu.unimagdalena.medsys.repositories;
 
-import edu.unimagdalena.medsys.entities.Patient;
-import edu.unimagdalena.medsys.enums.PatientStatus;
+import edu.unimagdalena.medsys.domain.entities.Patient;
+import edu.unimagdalena.medsys.domain.repositories.PatientRepository;
+import edu.unimagdalena.medsys.domain.enums.PatientStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
