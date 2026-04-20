@@ -1,6 +1,6 @@
-package edu.unimagdalena.medsys.repositories;
+package edu.unimagdalena.medsys.domain.repositories;
 
-import edu.unimagdalena.medsys.entities.AppointmentType;
+import edu.unimagdalena.medsys.domain.entities.AppointmentType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

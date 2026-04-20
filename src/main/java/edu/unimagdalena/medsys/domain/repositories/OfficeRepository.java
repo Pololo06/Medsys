@@ -1,7 +1,7 @@
-package edu.unimagdalena.medsys.repositories;
+package edu.unimagdalena.medsys.domain.repositories;
 
-import edu.unimagdalena.medsys.entities.Office;
-import edu.unimagdalena.medsys.enums.OfficeStatus;
+import edu.unimagdalena.medsys.domain.entities.Office;
+import edu.unimagdalena.medsys.domain.enums.OfficeStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

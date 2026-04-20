@@ -1,4 +1,4 @@
-package edu.unimagdalena.medsys.enums;
+package edu.unimagdalena.medsys.domain.enums;
 
 public enum PatientStatus {
     ACTIVE,

@@ -1,7 +1,7 @@
-package edu.unimagdalena.medsys.repositories;
+package edu.unimagdalena.medsys.domain.repositories;
 
-import edu.unimagdalena.medsys.entities.Appointment;
-import edu.unimagdalena.medsys.enums.AppointmentStatus;
+import edu.unimagdalena.medsys.domain.entities.Appointment;
+import edu.unimagdalena.medsys.domain.enums.AppointmentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

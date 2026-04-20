@@ -1,7 +1,7 @@
-package edu.unimagdalena.medsys.repositories;
+package edu.unimagdalena.medsys.domain.repositories;
 
 
-import edu.unimagdalena.medsys.entities.Specialty;
+import edu.unimagdalena.medsys.domain.entities.Specialty;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

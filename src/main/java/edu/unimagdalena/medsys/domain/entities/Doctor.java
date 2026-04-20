@@ -1,4 +1,4 @@
-package edu.unimagdalena.medsys.entities;
+package edu.unimagdalena.medsys.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,23 +8,31 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "appointment_types")
+@Table(name = "doctors")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AppointmentType {
+public class Doctor {
     @Id @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @Column(nullable = false)
-    private String name;
+    private String fullName;
     @Column(nullable = false)
-    private int durationMinutes;
+    private boolean active;
 
-    @OneToMany(mappedBy = "appointmentType", fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "specialty_id")
+    private Specialty specialty;
+
+    @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY)
+    private Set<DoctorSchedule> doctorSchedules;
+
+    @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY)
     private Set<Appointment> appointments;
 
     @Column(name = "created_at",nullable = false) private Instant createdAt;
     @Column(name = "updated_at",nullable = false) private Instant updatedAt;
 }
+

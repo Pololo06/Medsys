@@ -1,6 +1,6 @@
-package edu.unimagdalena.medsys.entities;
+package edu.unimagdalena.medsys.domain.entities;
 
-import edu.unimagdalena.medsys.enums.AppointmentStatus;
+import edu.unimagdalena.medsys.domain.enums.AppointmentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
