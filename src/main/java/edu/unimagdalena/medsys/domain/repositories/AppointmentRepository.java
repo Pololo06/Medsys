@@ -19,8 +19,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     SELECT a.doctor.specialty.id, COUNT(a)
     FROM Appointment a
     WHERE a.status IN (
-        edu.unimagdalena.medsys.enums.AppointmentStatus.CANCELLED,
-        edu.unimagdalena.medsys.enums.AppointmentStatus.NO_SHOW
+        edu.unimagdalena.medsys.domain.enums.AppointmentStatus.CANCELLED,
+        edu.unimagdalena.medsys.domain.enums.AppointmentStatus.NO_SHOW
     )
     GROUP BY a.doctor.specialty.id
     """)
@@ -29,7 +29,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     @Query("""
     SELECT a.doctor.id, COUNT(a)
     FROM Appointment a
-    WHERE a.status = edu.unimagdalena.medsys.enums.AppointmentStatus.COMPLETED
+    WHERE a.status = edu.unimagdalena.medsys.domain.enums.AppointmentStatus.COMPLETED
     GROUP BY a.doctor.id
     ORDER BY COUNT(a) DESC
     """)
@@ -38,7 +38,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     @Query("""
     SELECT a.patient.id, COUNT(a)
     FROM Appointment a
-    WHERE a.status = edu.unimagdalena.medsys.enums.AppointmentStatus.NO_SHOW
+    WHERE a.status = edu.unimagdalena.medsys.domain.enums.AppointmentStatus.NO_SHOW
     AND a.startTime BETWEEN :start AND :end
     GROUP BY a.patient.id
     ORDER BY COUNT(a) DESC
@@ -50,8 +50,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     FROM Appointment a
     WHERE a.doctor.id = :doctorId
     AND a.status IN (
-        edu.unimagdalena.medsys.enums.AppointmentStatus.SCHEDULED,
-        edu.unimagdalena.medsys.enums.AppointmentStatus.CONFIRMED
+        edu.unimagdalena.medsys.domain.enums.AppointmentStatus.SCHEDULED,
+        edu.unimagdalena.medsys.domain.enums.AppointmentStatus.CONFIRMED
     )
     AND a.startTime < :end
     AND a.endTime > :start
@@ -63,8 +63,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     FROM Appointment a
     WHERE a.office.id = :officeId
     AND a.status IN (
-        edu.unimagdalena.medsys.enums.AppointmentStatus.SCHEDULED,
-        edu.unimagdalena.medsys.enums.AppointmentStatus.CONFIRMED
+        edu.unimagdalena.medsys.domain.enums.AppointmentStatus.SCHEDULED,
+        edu.unimagdalena.medsys.domain.enums.AppointmentStatus.CONFIRMED
     )
     AND a.startTime < :end
     AND a.endTime > :start
@@ -76,8 +76,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     FROM Appointment a
     WHERE a.patient.id = :patientId
     AND a.status IN (
-        edu.unimagdalena.medsys.enums.AppointmentStatus.SCHEDULED,
-        edu.unimagdalena.medsys.enums.AppointmentStatus.CONFIRMED
+        edu.unimagdalena.medsys.domain.enums.AppointmentStatus.SCHEDULED,
+        edu.unimagdalena.medsys.domain.enums.AppointmentStatus.CONFIRMED
     )
     AND a.startTime < :end
     AND a.endTime > :start
@@ -96,8 +96,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     SELECT a FROM Appointment a
     WHERE a.doctor.id = :doctorId
     AND a.status IN (
-        edu.unimagdalena.medsys.enums.AppointmentStatus.SCHEDULED,
-        edu.unimagdalena.medsys.enums.AppointmentStatus.CONFIRMED
+        edu.unimagdalena.medsys.domain.enums.AppointmentStatus.SCHEDULED,
+        edu.unimagdalena.medsys.domain.enums.AppointmentStatus.CONFIRMED
     )
     AND a.startTime BETWEEN :start AND :end
     """)

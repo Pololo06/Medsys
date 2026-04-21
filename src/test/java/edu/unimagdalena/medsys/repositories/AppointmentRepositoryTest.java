@@ -174,7 +174,7 @@ class AppointmentRepositoryTest extends AbstractRepositoryIT {
 
     @Test
     @DisplayName("Find appointments by doctor and day")
-    void shouldFindAppointmentsByDoctorAndDay() {
+    void    shouldFindAppointmentsByDoctorAndDay() {
         var now = LocalDateTime.now();
 
         var appointment = createAppointment(
