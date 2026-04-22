@@ -40,23 +40,26 @@ spring.jpa.hibernate.ddl-auto=update
 
 ## Estructura del Proyecto
 
-
+```text
 src/
-├── main/java/edu/unimagdalena/medsys/
-│ ├── entities/ # Entidades JPA
-│ ├── enums/ # AppointmentStatus, OfficeStatus, PatientStatus
-│ ├── dto/
-│ │ ├── request/ # DTOs de entrada
-│ │ └── response/ # DTOs de salida
-│ ├── repositories/ # Interfaces JpaRepository
-│ ├── services/
-│ │ └── impl/ # Lógica de negocio
-│ ├── mappers/ # Conversión entidad <-> DTO
-│ └── exceptions/ # Excepciones + GlobalExceptionHandler
-│
-└── test/java/edu/unimagdalena/medsys/
-├── repositories/ # Tests con Testcontainers
-└── services/ # Tests unitarios con Mockito
+├── main/
+│   ├── java/edu/unimagdalena/medsys/
+│   │   ├── entities/       # Entidades JPA
+│   │   ├── enums/          # Estados (Appointment, Office, Patient)
+│   │   ├── dto/
+│   │   │   ├── request/    # DTOs de entrada
+│   │   │   └── response/   # DTOs de salida
+│   │   ├── repositories/   # Interfaces JpaRepository
+│   │   ├── services/
+│   │   │   └── impl/       # Lógica de negocio
+│   │   ├── mappers/        # Conversión Entidad <-> DTO
+│   │   └── exceptions/     # Custom Exceptions & Global Handler
+│   └── resources/
+│       └── application.properties
+└── test/
+    └── java/edu/unimagdalena/medsys/
+        ├── repositories/   # Tests de Integración (Testcontainers)
+        └── services/       # Tests Unitarios (Mockito)
 
 ---
 
