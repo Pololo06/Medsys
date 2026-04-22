@@ -1,3 +1,7 @@
 package edu.unimagdalena.medsys.api.dto.request;
 
-public record CancelAppointmentRequest(String reason) {}
+import jakarta.validation.constraints.NotBlank;
+
+public record CancelAppointmentRequest(
+        @NotBlank String reason
+) {}
