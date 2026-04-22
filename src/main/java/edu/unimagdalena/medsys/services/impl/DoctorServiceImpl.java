@@ -8,6 +8,7 @@ import edu.unimagdalena.medsys.services.mappers.DoctorMapper;
 import edu.unimagdalena.medsys.domain.repositories.DoctorRepository;
 import edu.unimagdalena.medsys.domain.repositories.SpecialtyRepository;
 import edu.unimagdalena.medsys.services.DoctorService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,15 +18,11 @@ import java.util.UUID;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorRepository doctorRepository;
     private final SpecialtyRepository specialtyRepository;
-
-    public DoctorServiceImpl(DoctorRepository doctorRepository, SpecialtyRepository specialtyRepository) {
-        this.doctorRepository = doctorRepository;
-        this.specialtyRepository = specialtyRepository;
-    }
 
     @Override
     public DoctorResponse create(CreateDoctorRequest req) {

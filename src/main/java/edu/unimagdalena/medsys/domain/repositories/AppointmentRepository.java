@@ -27,20 +27,20 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     List<Object[]> countCancelledAndNoShowBySpecialty();
 
     @Query("""
-    SELECT a.doctor.id, COUNT(a)
+    SELECT a.doctor.id, a.doctor.fullName, COUNT(a)
     FROM Appointment a
     WHERE a.status = edu.unimagdalena.medsys.domain.enums.AppointmentStatus.COMPLETED
-    GROUP BY a.doctor.id
+    GROUP BY a.doctor.id, a.doctor.fullName
     ORDER BY COUNT(a) DESC
     """)
     List<Object[]> doctorRanking();
 
     @Query("""
-    SELECT a.patient.id, COUNT(a)
+    SELECT a.patient.id, a.patient.fullName, COUNT(a)
     FROM Appointment a
     WHERE a.status = edu.unimagdalena.medsys.domain.enums.AppointmentStatus.NO_SHOW
     AND a.startTime BETWEEN :start AND :end
-    GROUP BY a.patient.id
+    GROUP BY a.patient.id, a.patient.fullName
     ORDER BY COUNT(a) DESC
     """)
     List<Object[]> topNoShowPatients(LocalDateTime start, LocalDateTime end);
@@ -85,10 +85,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     boolean existsPatientOverlap(UUID patientId, LocalDateTime start, LocalDateTime end);
 
     @Query("""
-    SELECT a.office.id, COUNT(a)
+    SELECT a.office.id, a.office.name, COUNT(a)
     FROM Appointment a
     WHERE a.startTime BETWEEN :start AND :end
-    GROUP BY a.office.id
+    GROUP BY a.office.id, a.office.name
     """)
     List<Object[]> countAppointmentsByOffice(LocalDateTime start, LocalDateTime end);
 

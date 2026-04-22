@@ -7,6 +7,7 @@ import edu.unimagdalena.medsys.services.mappers.DoctorScheduleMapper;
 import edu.unimagdalena.medsys.domain.repositories.DoctorRepository;
 import edu.unimagdalena.medsys.domain.repositories.DoctorScheduleRepository;
 import edu.unimagdalena.medsys.services.DoctorScheduleService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,16 +18,11 @@ import java.util.UUID;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class DoctorScheduleServiceImpl implements DoctorScheduleService {
 
     private final DoctorScheduleRepository doctorScheduleRepository;
     private final DoctorRepository doctorRepository;
-
-    public DoctorScheduleServiceImpl(DoctorScheduleRepository doctorScheduleRepository,
-                                     DoctorRepository doctorRepository) {
-        this.doctorScheduleRepository = doctorScheduleRepository;
-        this.doctorRepository = doctorRepository;
-    }
 
     @Override
     public DoctorScheduleResponse create(UUID doctorId, CreateDoctorScheduleRequest req) {

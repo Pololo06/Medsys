@@ -8,6 +8,7 @@ import edu.unimagdalena.medsys.exceptions.ResourceNotFoundException;
 import edu.unimagdalena.medsys.services.mappers.PatientMapper;
 import edu.unimagdalena.medsys.domain.repositories.PatientRepository;
 import edu.unimagdalena.medsys.services.PatientService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,13 +18,10 @@ import java.util.UUID;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class PatientServiceImpl implements PatientService {
 
     private final PatientRepository patientRepository;
-
-    public PatientServiceImpl(PatientRepository patientRepository) {
-        this.patientRepository = patientRepository;
-    }
 
     @Override
     public PatientResponse create(CreatePatientRequest req) {

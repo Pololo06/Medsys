@@ -8,6 +8,7 @@ import edu.unimagdalena.medsys.exceptions.ResourceNotFoundException;
 import edu.unimagdalena.medsys.services.mappers.OfficeMapper;
 import edu.unimagdalena.medsys.domain.repositories.OfficeRepository;
 import edu.unimagdalena.medsys.services.OfficeService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,13 +18,10 @@ import java.util.UUID;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class OfficeServiceImpl implements OfficeService {
 
     private final OfficeRepository officeRepository;
-
-    public OfficeServiceImpl(OfficeRepository officeRepository) {
-        this.officeRepository = officeRepository;
-    }
 
     @Override
     public OfficeResponse create(CreateOfficeRequest req) {

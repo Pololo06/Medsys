@@ -7,9 +7,12 @@ import edu.unimagdalena.medsys.exceptions.ValidationException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -38,24 +41,32 @@ public class GlobalExceptionHandler {
                 .body(ApiError.of(HttpStatus.BAD_REQUEST, ex.getMessage(), req.getRequestURI(), null));
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiError> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex, HttpServletRequest req) {
+
+        List<ApiError.FieldViolation> violations = ex.getBindingResult().getFieldErrors().stream()
+                .map(fe -> new ApiError.FieldViolation(fe.getField(), fe.getDefaultMessage()))
+                .toList();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiError.of(HttpStatus.BAD_REQUEST, "Validation failed", req.getRequestURI(), violations));
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiError> handleMissingParams(
+            MissingServletRequestParameterException ex, HttpServletRequest req) {
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiError.of(HttpStatus.BAD_REQUEST,
+                        "Missing parameter: " + ex.getParameterName(),
+                        req.getRequestURI(),
+                        null));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGeneric(Exception ex, HttpServletRequest req) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiError.of(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error", req.getRequestURI(), null));
-    }
-    @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<ApiError> handleMissingParams(
-            MissingServletRequestParameterException ex,
-            HttpServletRequest req) {
-
-        String message = "Missing parameter: " + ex.getParameterName();
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ApiError.of(
-                        HttpStatus.BAD_REQUEST,
-                        message,
-                        req.getRequestURI(),
-                        null
-                ));
     }
 }

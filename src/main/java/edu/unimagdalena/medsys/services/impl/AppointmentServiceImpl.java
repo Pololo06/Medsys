@@ -15,6 +15,7 @@ import edu.unimagdalena.medsys.exceptions.ConflictException;
 import edu.unimagdalena.medsys.exceptions.ResourceNotFoundException;
 import edu.unimagdalena.medsys.services.mappers.AppointmentMapper;
 import edu.unimagdalena.medsys.services.AppointmentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ import java.util.UUID;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
@@ -34,20 +36,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final OfficeRepository officeRepository;
     private final AppointmentTypeRepository appointmentTypeRepository;
     private final DoctorScheduleRepository doctorScheduleRepository;
-
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository,
-                                  PatientRepository patientRepository,
-                                  DoctorRepository doctorRepository,
-                                  OfficeRepository officeRepository,
-                                  AppointmentTypeRepository appointmentTypeRepository,
-                                  DoctorScheduleRepository doctorScheduleRepository) {
-        this.appointmentRepository = appointmentRepository;
-        this.patientRepository = patientRepository;
-        this.doctorRepository = doctorRepository;
-        this.officeRepository = officeRepository;
-        this.appointmentTypeRepository = appointmentTypeRepository;
-        this.doctorScheduleRepository = doctorScheduleRepository;
-    }
 
     @Override
     public AppointmentResponse create(CreateAppointmentRequest req) {

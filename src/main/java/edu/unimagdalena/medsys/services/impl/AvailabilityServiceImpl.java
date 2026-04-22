@@ -6,6 +6,7 @@ import edu.unimagdalena.medsys.domain.repositories.AppointmentRepository;
 import edu.unimagdalena.medsys.domain.repositories.DoctorRepository;
 import edu.unimagdalena.medsys.domain.repositories.DoctorScheduleRepository;
 import edu.unimagdalena.medsys.services.AvailabilityService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,19 +18,12 @@ import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class AvailabilityServiceImpl implements AvailabilityService {
 
     private final DoctorRepository doctorRepository;
     private final DoctorScheduleRepository doctorScheduleRepository;
     private final AppointmentRepository appointmentRepository;
-
-    public AvailabilityServiceImpl(DoctorRepository doctorRepository,
-                                   DoctorScheduleRepository doctorScheduleRepository,
-                                   AppointmentRepository appointmentRepository) {
-        this.doctorRepository = doctorRepository;
-        this.doctorScheduleRepository = doctorScheduleRepository;
-        this.appointmentRepository = appointmentRepository;
-    }
 
     @Override
     public List<AvailabilitySlotResponse> getAvailableSlots(UUID doctorId, LocalDate date, int durationMinutes) {

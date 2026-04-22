@@ -110,6 +110,16 @@ class DoctorControllerTest {
     }
 
     @Test
+    void create_shouldReturn400WhenFullNameIsBlank() throws Exception {
+        mvc.perform(post("/api/doctors")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fullName\":\"\",\"specialtyId\":null}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.violations").isArray());
+    }
+
+    @Test
     void findActiveBySpecialty_shouldReturn200() throws Exception {
         UUID specialtyId = UUID.randomUUID();
         UUID doctorId = UUID.randomUUID();

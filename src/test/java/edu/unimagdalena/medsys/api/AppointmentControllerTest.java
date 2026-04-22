@@ -6,6 +6,7 @@ import edu.unimagdalena.medsys.api.dto.request.CompleteAppointmentRequest;
 import edu.unimagdalena.medsys.api.dto.request.CreateAppointmentRequest;
 import edu.unimagdalena.medsys.api.dto.response.AppointmentResponse;
 import edu.unimagdalena.medsys.domain.enums.AppointmentStatus;
+
 import edu.unimagdalena.medsys.exceptions.ResourceNotFoundException;
 import edu.unimagdalena.medsys.services.AppointmentService;
 import org.junit.jupiter.api.Test;
@@ -237,8 +238,50 @@ class AppointmentControllerTest {
     }
 
     @Test
-    void noShow_shouldReturn200() throws Exception {
+    void create_shouldReturn400WhenBodyIsEmpty() throws Exception {
+        mvc.perform(post("/api/appointments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.violations").isArray());
+    }
 
+    @Test
+    void create_shouldReturn409WhenDoctorHasOverlap() throws Exception {
+        var req = new CreateAppointmentRequest(
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                LocalDateTime.now().plusDays(1)
+        );
+
+        when(service.create(any()))
+                .thenThrow(new edu.unimagdalena.medsys.exceptions.ConflictException(
+                        "Doctor already has an appointment in that time slot"));
+
+        mvc.perform(post("/api/appointments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsString(req)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message")
+                        .value("Doctor already has an appointment in that time slot"));
+    }
+
+    @Test
+    void cancel_shouldReturn400WhenReasonIsBlank() throws Exception {
+        var id = UUID.randomUUID();
+
+        mvc.perform(patch("/api/appointments/{id}/cancel", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"reason\":\"\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.violations").isArray());
+    }
+
+    @Test
+    void noShow_shouldReturn200() throws Exception {
         var id = UUID.randomUUID();
 
         var resp = new AppointmentResponse(

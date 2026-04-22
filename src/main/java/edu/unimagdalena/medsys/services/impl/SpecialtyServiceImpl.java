@@ -6,6 +6,7 @@ import edu.unimagdalena.medsys.exceptions.ResourceNotFoundException;
 import edu.unimagdalena.medsys.services.mappers.SpecialtyMapper;
 import edu.unimagdalena.medsys.domain.repositories.SpecialtyRepository;
 import edu.unimagdalena.medsys.services.SpecialtyService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,13 +16,10 @@ import java.util.UUID;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class SpecialtyServiceImpl implements SpecialtyService {
 
     private final SpecialtyRepository specialtyRepository;
-
-    public SpecialtyServiceImpl(SpecialtyRepository specialtyRepository) {
-        this.specialtyRepository = specialtyRepository;
-    }
 
     @Override
     public SpecialtyResponse create(CreateSpecialtyRequest req) {

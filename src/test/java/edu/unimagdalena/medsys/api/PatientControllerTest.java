@@ -118,4 +118,14 @@ class PatientControllerTest {
                 .andExpect(jsonPath("$.fullName").value("Laura Jimenez"))
                 .andExpect(jsonPath("$.status").value("INACTIVE"));
     }
+
+    @Test
+    void create_shouldReturn400WhenFieldsAreBlank() throws Exception {
+        mvc.perform(post("/api/patients")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fullName\":\"\",\"email\":\"not-an-email\",\"phone\":\"\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.violations").isArray());
+    }
 }

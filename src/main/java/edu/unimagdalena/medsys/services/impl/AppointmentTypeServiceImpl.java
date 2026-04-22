@@ -6,6 +6,7 @@ import edu.unimagdalena.medsys.exceptions.ResourceNotFoundException;
 import edu.unimagdalena.medsys.services.mappers.AppointmentTypeMapper;
 import edu.unimagdalena.medsys.domain.repositories.AppointmentTypeRepository;
 import edu.unimagdalena.medsys.services.AppointmentTypeService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,13 +16,10 @@ import java.util.UUID;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class AppointmentTypeServiceImpl implements AppointmentTypeService {
 
     private final AppointmentTypeRepository appointmentTypeRepository;
-
-    public AppointmentTypeServiceImpl(AppointmentTypeRepository appointmentTypeRepository) {
-        this.appointmentTypeRepository = appointmentTypeRepository;
-    }
 
     @Override
     public AppointmentTypeResponse create(CreateAppointmentTypeRequest req) {

@@ -106,4 +106,14 @@ class OfficeControllerTest {
                 .andExpect(jsonPath("$.name").value("Consultorio 404"))
                 .andExpect(jsonPath("$.status").value("OUT_OF_SERVICE"));
     }
+
+    @Test
+    void create_shouldReturn400WhenFieldsAreBlank() throws Exception {
+        mvc.perform(post("/api/offices")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"\",\"location\":\"\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.violations").isArray());
+    }
 }
