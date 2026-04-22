@@ -1,4 +1,4 @@
-package edu.unimagdalena.medsys.api;
+package edu.unimagdalena.medsys.api.error;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.http.HttpStatus;

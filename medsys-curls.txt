@@ -1,0 +1,138 @@
+# ============================================================
+#  MEDSYS - Curl Tests
+#  PARA PROBAR LOS CURLS TOCA IR USANDO EL GIT BASH Y PROBAR CON LOS IDS GENERADOS POR LA API.
+# ============================================================
+
+# ── SPECIALTIES ──────────────────────────────────────────────
+# Crear especialidad
+curl -i -X POST "http://localhost:8080/api/specialties" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Cardiología"}'
+
+# Listar especialidades
+curl -i -X GET "http://localhost:8080/api/specialties"
+
+# Obtener por id
+curl -i -X GET "http://localhost:8080/api/specialties/00000000-0000-0000-0000-000000000001"
+
+
+# ── OFFICES ───────────────────────────────────────────────────
+# Crear consultorio
+curl -i -X POST "http://localhost:8080/api/offices" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Consultorio 1","location":"Piso 2"}'
+
+# Listar consultorios
+curl -i -X GET "http://localhost:8080/api/offices"
+
+# Obtener por id
+curl -i -X GET "http://localhost:8080/api/offices/00000000-0000-0000-0000-000000000002"
+
+# Actualizar consultorio
+curl -i -X PUT "http://localhost:8080/api/offices/00000000-0000-0000-0000-000000000002" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Consultorio 1 Actualizado","location":"Piso 3","status":"AVAILABLE"}'
+
+
+# ── APPOINTMENT TYPES ─────────────────────────────────────────
+# Crear tipo de cita
+curl -i -X POST "http://localhost:8080/api/appointment-types" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Consulta General","durationMinutes":30}'
+
+# Listar tipos de cita
+curl -i -X GET "http://localhost:8080/api/appointment-types"
+
+
+# ── PATIENTS ──────────────────────────────────────────────────
+# Crear paciente
+curl -i -X POST "http://localhost:8080/api/patients" \
+  -H "Content-Type: application/json" \
+  -d '{"fullName":"Carlos Rodríguez","email":"carlos@mail.com","phone":"3001234567"}'
+
+# Listar pacientes
+curl -i -X GET "http://localhost:8080/api/patients"
+
+# Obtener por id
+curl -i -X GET "http://localhost:8080/api/patients/00000000-0000-0000-0000-000000000003"
+
+# Actualizar paciente
+curl -i -X PUT "http://localhost:8080/api/patients/00000000-0000-0000-0000-000000000003" \
+  -H "Content-Type: application/json" \
+  -d '{"fullName":"Carlos Rodríguez","email":"carlos@mail.com","phone":"3009999999","status":"ACTIVE"}'
+
+
+# ── DOCTORS ───────────────────────────────────────────────────
+# Crear doctor
+curl -i -X POST "http://localhost:8080/api/doctors" \
+  -H "Content-Type: application/json" \
+  -d '{"fullName":"Dra. Ana López","specialtyId":"00000000-0000-0000-0000-000000000001"}'
+
+# Listar doctores
+curl -i -X GET "http://localhost:8080/api/doctors"
+
+# Obtener por id
+curl -i -X GET "http://localhost:8080/api/doctors/00000000-0000-0000-0000-000000000004"
+
+# Actualizar doctor
+curl -i -X PUT "http://localhost:8080/api/doctors/00000000-0000-0000-0000-000000000004" \
+  -H "Content-Type: application/json" \
+  -d '{"fullName":"Dra. Ana López","active":true}'
+
+# Listar doctores activos por especialidad
+curl -i -X GET "http://localhost:8080/api/doctors/specialty/00000000-0000-0000-0000-000000000001/active"
+
+
+# ── DOCTOR SCHEDULES ──────────────────────────────────────────
+# Crear horario de doctor
+curl -i -X POST "http://localhost:8080/api/doctors/00000000-0000-0000-0000-000000000004/schedules" \
+  -H "Content-Type: application/json" \
+  -d '{"day":"MONDAY","startTime":"08:00:00","endTime":"16:00:00"}'
+
+# Listar horarios del doctor
+curl -i -X GET "http://localhost:8080/api/doctors/00000000-0000-0000-0000-000000000004/schedules"
+
+
+# ── AVAILABILITY ──────────────────────────────────────────────
+# Consultar slots disponibles
+curl -i -X GET "http://localhost:8080/api/availability/doctors/00000000-0000-0000-0000-000000000004?date=2025-05-05&durationMinutes=30"
+
+
+# ── APPOINTMENTS ──────────────────────────────────────────────
+# Crear cita
+curl -i -X POST "http://localhost:8080/api/appointments" \
+  -H "Content-Type: application/json" \
+  -d '{"patientId":"00000000-0000-0000-0000-000000000003","doctorId":"00000000-0000-0000-0000-000000000004","officeId":"00000000-0000-0000-0000-000000000002","appointmentTypeId":"00000000-0000-0000-0000-000000000005","startTime":"2025-05-05T09:00:00"}'
+
+# Listar citas
+curl -i -X GET "http://localhost:8080/api/appointments"
+
+# Obtener por id
+curl -i -X GET "http://localhost:8080/api/appointments/00000000-0000-0000-0000-000000000006"
+
+# Confirmar cita
+curl -i -X PATCH "http://localhost:8080/api/appointments/00000000-0000-0000-0000-000000000006/confirm"
+
+# Completar cita
+curl -i -X PATCH "http://localhost:8080/api/appointments/00000000-0000-0000-0000-000000000006/complete" \
+  -H "Content-Type: application/json" \
+  -d '{"notes":"Paciente en buen estado, control en 3 meses"}'
+
+# Cancelar cita
+curl -i -X PATCH "http://localhost:8080/api/appointments/00000000-0000-0000-0000-000000000006/cancel" \
+  -H "Content-Type: application/json" \
+  -d '{"reason":"El paciente no pudo asistir"}'
+
+# Marcar como no asistida
+curl -i -X PATCH "http://localhost:8080/api/appointments/00000000-0000-0000-0000-000000000006/no-show"
+
+
+# ── REPORTS ───────────────────────────────────────────────────
+# Ocupación de consultorios por rango de fechas
+curl -i -X GET "http://localhost:8080/api/reports/office-occupancy?from=2025-01-01&to=2025-12-31"
+
+# Productividad de doctores
+curl -i -X GET "http://localhost:8080/api/reports/doctor-productivity"
+
+# Pacientes con más inasistencias
+curl -i -X GET "http://localhost:8080/api/reports/no-show-patients?from=2025-01-01&to=2025-12-31"
