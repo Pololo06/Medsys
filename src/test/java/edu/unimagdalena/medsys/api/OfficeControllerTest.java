@@ -1,23 +1,24 @@
 package edu.unimagdalena.medsys.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.unimagdalena.medsys.exceptions.ResourceNotFoundException;
+import tools.jackson.databind.ObjectMapper;
 import edu.unimagdalena.medsys.api.dto.request.CreateOfficeRequest;
 import edu.unimagdalena.medsys.api.dto.request.UpdateOfficeRequest;
 import edu.unimagdalena.medsys.api.dto.response.OfficeResponse;
 import edu.unimagdalena.medsys.domain.enums.OfficeStatus;
+import edu.unimagdalena.medsys.exceptions.ResourceNotFoundException;
 import edu.unimagdalena.medsys.services.OfficeService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
