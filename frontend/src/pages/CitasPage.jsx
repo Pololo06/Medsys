@@ -8,6 +8,7 @@ import { getOffices } from '../services/OfficeService';
 import { getAppointmentTypes } from '../services/AppointmentTypeService';
 import ConfirmDialog from '../components/ConfirmDialog';
 
+
 const STATUS_MAP = {
   SCHEDULED: { badge: 'badge-blue',   label: 'Programada' },
   CONFIRMED:  { badge: 'badge-teal',   label: 'Confirmada'  },
@@ -47,6 +48,7 @@ export default function CitasPage() {
   }
 
   useEffect(() => { fetchData(); }, []);
+  function closeModal(){ setIsModalOpen(false); setError(''); }
 
   async function handleAction(type, cita) {
     try {

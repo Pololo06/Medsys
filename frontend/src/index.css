@@ -42,8 +42,16 @@
   --purple:    #8b5cf6;
   --orange:    #f97316;
 
+  --accent: var(--brand-600);
+
+  --text-primary: var(--gray-900);
+  --text-secondary: var(--gray-700);
+  --text-muted: var(--gray-500);
+
+  --teal-600: #0f766e;
+
   /* Surfaces */
-  --bg-app:    var(--gray-50);
+  --bg-app: #f5f8fc;
   --bg-card:   var(--gray-0);
   --bg-sidebar:#0f172a;
   --sidebar-w: 240px;
@@ -115,8 +123,13 @@ html, body {
   color: #e2e8f0;
 }
 .sidebar-link.active {
-  background: rgba(59, 157, 245, 0.15);
-  color: #61b9f9;
+  background: linear-gradient(
+    90deg,
+    rgba(59,157,245,.18),
+    rgba(59,157,245,.08)
+  );
+
+  color: white;
 }
 .sidebar-link.active .nav-icon {
   color: #3b9df5;
@@ -154,7 +167,67 @@ html, body {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
+  box-shadow: 0 8px 24px rgba(15,23,42,.05);
+}
+
+.card-header {
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.stat-card {
+  flex: 1 1 220px;
+  min-height: 120px;
+
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-xl);
+
+  padding: 20px;
+
   box-shadow: var(--shadow-sm);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  transition: all .25s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.stat-card-icon {
+  width: 44px;
+  height: 44px;
+
+  border-radius: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-card-label {
+  font-size: .82rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.stat-card-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-top: 4px;
 }
 
 /* ── Table ────────────────────────────────────── */
@@ -194,7 +267,8 @@ html, body {
 .medsys-table tbody tr {
   transition: background var(--transition);
 }
-.medsys-table tbody tr:hover { background: var(--gray-25); }
+.medsys-table tbody tr:hover { background: #e3e9ee; 
+transition: .2s;}
 
 /* ── Inputs ───────────────────────────────────── */
 .input {
@@ -298,6 +372,21 @@ html, body {
 .badge-red    { background: #fee2e2; color: #dc2626; }
 .badge-orange { background: #ffedd5; color: #c2410c; }
 .badge-gray   { background: var(--gray-100); color: var(--gray-500); }
+
+.badge-teal {
+  background: #ccfbf1;
+  color: #0f766e;
+}
+
+.badge-violet {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+
+.badge-amber {
+  background: #fef3c7;
+  color: #b45309;
+}
 
 /* ── Modal ────────────────────────────────────── */
 .modal-overlay {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Plus, Pencil, Users, X } from 'lucide-react';
+import { Search, Plus, Pencil, Users, X, Mail, Phone } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { getAllPatients, createPatient, updatePatient } from '../services/PatientService';
 
@@ -9,15 +9,99 @@ const STATUS_MAP = {
   INACTIVE: { badge: 'badge-gray',  label: 'Inactivo' },
 };
 
+// ── Detail Modal ──────────────────────────────────────────────────────────────
+function PatientDetailModal({ patient, onClose, onEdit }) {
+  if (!patient) return null;
+  const st = STATUS_MAP[patient.status] || STATUS_MAP.ACTIVE;
+  const initials = patient.fullName
+    ? patient.fullName.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase()
+    : '?';
+
+  return (
+    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="modal" style={{ maxWidth: 480 }}>
+        {/* Header */}
+        <div className="modal-header">
+          <h3 className="modal-title">Detalle del paciente</h3>
+          <button
+            onClick={onClose}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 4, borderRadius: 6, display: 'flex' }}
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="modal-body">
+          {/* Avatar + name + status */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
+            <div style={{
+              width: 56, height: 56, borderRadius: '50%',
+              background: 'var(--teal-light, #e0f2f1)',
+              color: 'var(--teal, #0d9488)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontWeight: 700, fontSize: '1.25rem', flexShrink: 0,
+            }}>
+              {initials}
+            </div>
+            <div>
+              <p style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--text-primary)', margin: 0, lineHeight: 1.3 }}>
+                {patient.fullName}
+              </p>
+              <span className={`badge ${st.badge}`} style={{ marginTop: 6, display: 'inline-block' }}>
+                {st.label}
+              </span>
+            </div>
+          </div>
+
+          <hr style={{ border: 'none', borderTop: '1px solid var(--border, #e5e7eb)', margin: '0 0 20px' }} />
+
+          {/* Fields */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+            <DetailRow icon={<Mail size={15} />}     label="CORREO"         value={patient.email || '—'} />
+            <DetailRow icon={<Phone size={15} />}    label="TELÉFONO"       value={patient.phone || '—'} mono />
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="modal-footer">
+          <button className="btn btn-secondary btn-sm" onClick={onClose}>Cerrar</button>
+          <button className="btn btn-primary btn-sm" onClick={() => { onClose(); onEdit(patient); }}>
+            <Pencil size={13} /> Editar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DetailRow({ icon, label, value, mono }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+      <span style={{ color: 'var(--text-muted)', marginTop: 2, flexShrink: 0 }}>{icon}</span>
+      <div>
+        <p style={{ margin: 0, fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.06em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+          {label}
+        </p>
+        <p style={{ margin: '2px 0 0', color: 'var(--text-primary)', fontFamily: mono ? 'var(--font-mono)' : undefined, fontSize: '0.9rem' }}>
+          {value}
+        </p>
+      </div>
+    </div>
+  );
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function PacientesPage() {
-  const [pacientes, setPacientes]     = useState([]);
-  const [loading, setLoading]         = useState(true);
-  const [search, setSearch]           = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editTarget, setEditTarget]   = useState(null);
-  const [form, setForm]               = useState(EMPTY_FORM);
-  const [error, setError]             = useState('');
-  const [saving, setSaving]           = useState(false);
+  const [pacientes, setPacientes]       = useState([]);
+  const [loading, setLoading]           = useState(true);
+  const [search, setSearch]             = useState('');
+  const [isModalOpen, setIsModalOpen]   = useState(false);
+  const [editTarget, setEditTarget]     = useState(null);
+  const [form, setForm]                 = useState(EMPTY_FORM);
+  const [error, setError]               = useState('');
+  const [saving, setSaving]             = useState(false);
+  const [detailPatient, setDetailPatient] = useState(null); // ← NEW
 
   async function fetchPacientes() {
     setLoading(true);
@@ -89,13 +173,21 @@ export default function PacientesPage() {
             ) : filtered.map(p => {
               const st = STATUS_MAP[p.status] || STATUS_MAP.ACTIVE;
               return (
-                <tr key={p.id}>
+                <tr
+                  key={p.id}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setDetailPatient(p)}   // ← click row → detail modal
+                >
                   <td style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{p.fullName}</td>
                   <td>{p.email}</td>
                   <td style={{ fontFamily: 'var(--font-mono)', fontSize: '0.81rem' }}>{p.phone || '—'}</td>
                   <td><span className={`badge ${st.badge}`}>{st.label}</span></td>
                   <td>
-                    <button className="btn btn-ghost btn-sm" onClick={() => openEdit(p)}>
+                    {/* Stop propagation so clicking Editar doesn't also open detail */}
+                    <button
+                      className="btn btn-ghost btn-sm"
+                      onClick={e => { e.stopPropagation(); openEdit(p); }}
+                    >
                       <Pencil size={12} /> Editar
                     </button>
                   </td>
@@ -106,6 +198,16 @@ export default function PacientesPage() {
         </table>
       </div>
 
+      {/* ── Detail Modal ── */}
+      {detailPatient && (
+        <PatientDetailModal
+          patient={detailPatient}
+          onClose={() => setDetailPatient(null)}
+          onEdit={p => { setDetailPatient(null); openEdit(p); }}
+        />
+      )}
+
+      {/* ── Create / Edit Modal ── */}
       {isModalOpen && (
         <div className="modal-overlay" onClick={e => e.target === e.currentTarget && closeModal()}>
           <div className="modal">

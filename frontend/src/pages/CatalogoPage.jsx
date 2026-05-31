@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { getSpecialties, createSpecialty } from '../services/SpecialtyService';
 import { getAppointmentTypes, createAppointmentType } from '../services/AppointmentTypeService';
 
+
 export default function CatalogoPage() {
   const [tab, setTab]           = useState('especialidades');
   const [specialties, setSpecialties] = useState([]);
@@ -25,6 +26,7 @@ export default function CatalogoPage() {
   useEffect(() => { fetchData(); }, []);
 
   function openNew() { setForm({ name: '', durationMinutes: 30 }); setError(''); setIsModalOpen(true); }
+  function closeModal(){ setIsModalOpen(false); setError(''); }
 
   async function handleSave() {
     if (!form.name.trim()) { setError('El nombre es obligatorio.'); return; }
