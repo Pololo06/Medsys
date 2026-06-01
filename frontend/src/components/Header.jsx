@@ -1,35 +1,40 @@
-import { useLocation } from 'react-router-dom';
-import { Sun, Moon } from 'lucide-react';
+import { LogOut, Sun, Moon } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import '../styles/Header.css'; 
-
-const pageTitles = {
-    '/':               'Dashboard',
-    '/pacientes':      'Gestión de Pacientes',
-    '/doctores':       'Control de Doctores',
-    '/catalogo':       'Catálogo de Servicios',
-    '/citas':          'Programación de Citas',
-    '/consultorios':   'Administración de Consultorios',
-    '/disponibilidad': 'Disponibilidad de Doctores',
-    '/reportes':       'Generación de Reportes',
-};
+import toast from 'react-hot-toast';
+import '../styles/Header.css';
 
 export default function Header() {
-    const location = useLocation();
-    const title = pageTitles[location.pathname] || 'MedSys';
-    const { theme, toggleTheme } = useTheme();
+  const { logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
-    return (
-        <header className="header-container">
-            <h1 className="header-title">{title}</h1>
+  function handleLogout() {
+    logout();
+    toast.success('Sesión cerrada correctamente');
+  }
 
-            <button
-                className="theme-toggle-btn"
-                onClick={toggleTheme}
-                title={theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-            >
-                {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-            </button>
-        </header>
-    );
+  return (
+    <header className="header">
+      <div className="header-content">
+        <div />
+        <div className="header-actions">
+          <button
+            onClick={toggleTheme}
+            title={`Cambiar a modo ${theme === 'light' ? 'oscuro' : 'claro'}`}
+            className="header-theme-toggle"
+          >
+            {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+          </button>
+          <button
+            onClick={handleLogout}
+            className="header-logout-btn"
+            title="Cerrar sesión"
+          >
+            <LogOut size={18} />
+            <span>Cerrar sesión</span>
+          </button>
+        </div>
+      </div>
+    </header>
+  );
 }

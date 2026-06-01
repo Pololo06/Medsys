@@ -1,4 +1,7 @@
 import { api } from './api';
-const URL = '/specialties';
-export const getSpecialties = () => api.get(URL);
-export const createSpecialty = (name) => api.post(URL, { name });
+
+const SPECIALTY_URL = '/specialties';
+
+export async function getSpecialties() {
+  return api.get(SPECIALTY_URL);
+}
