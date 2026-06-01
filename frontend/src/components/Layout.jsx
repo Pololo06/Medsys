@@ -7,16 +7,20 @@ export default function Layout({ children }) {
   const { collapsed, toggleSidebar } = useTheme();
 
   useEffect(() => {
-    function handleClick(e) {
-      if (collapsed) return;
+      function handleClick(e) {
+          const clickedSidebar = e.target.closest('nav');
+          const clickedHeader  = e.target.closest('header');
+          const isMainItself   = e.target.tagName === 'MAIN';
 
-      const clickedSidebar = e.target.closest('nav');
-      const clickedHeader = e.target.closest('header');
+          if (collapsed) {
+              // Abre con sidebar, header, o fondo del main
+              if (clickedSidebar || clickedHeader || isMainItself) toggleSidebar();
+              return;
+          }
 
-      if (!clickedSidebar && !clickedHeader) {
-        toggleSidebar();
+          // Cierra si tocó el header, la sidebar (no), o el fondo del main
+          if (clickedHeader || isMainItself) toggleSidebar();
       }
-    }
 
     document.addEventListener('mousedown', handleClick);
 

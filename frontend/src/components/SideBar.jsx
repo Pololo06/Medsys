@@ -172,23 +172,6 @@ export default function Sidebar() {
             Cerrar sesión
           </span>
         </button>
-
-        {/* Collapse toggle */}
-        <button
-          onClick={toggleSidebar}
-          title={collapsed ? 'Expandir menú' : 'Colapsar menú'}
-          style={{
-            width: '100%', border: 'none', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            padding: '7px', borderRadius: 8, marginTop: 4,
-            color: '#475569', background: 'rgba(255,255,255,0.04)',
-            transition: 'background 150ms ease',
-          }}
-          onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.09)'}
-          onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
-        >
-          {collapsed ? <ChevronRight size={15} /> : <ChevronLeft size={15} />}
-        </button>
       </div>
     </nav>
   );
