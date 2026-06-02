@@ -24,6 +24,15 @@ function getToken() {
   }
 }
 
+function buildUrl(endpoint, params) {
+  if (!params) return endpoint;
+  const qs = Object.entries(params)
+    .filter(([, v]) => v !== undefined && v !== null)
+    .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+    .join('&');
+  return qs ? `${endpoint}?${qs}` : endpoint;
+}
+
 async function request(endpoint, options = {}) {
   const token = getToken();
   const headers = {
@@ -34,15 +43,16 @@ async function request(endpoint, options = {}) {
     headers['Authorization'] = `Bearer ${token}`;
   }
 
+  const url = buildUrl(endpoint, options.params);
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.TIMEOUT);
 
+  const fetchOptions = { method: options.method, headers, signal: controller.signal };
+  if (options.body) fetchOptions.body = options.body;
+
   try {
-    const response = await fetch(`${API_CONFIG.BASE_URL}${endpoint}`, {
-      ...options,
-      headers,
-      signal: controller.signal
-    });
+    const response = await fetch(`${API_CONFIG.BASE_URL}${url}`, fetchOptions);
     clearTimeout(timeoutId);
 
     if (response.status === HTTP_STATUS.UNAUTHORIZED) {
@@ -82,7 +92,7 @@ async function request(endpoint, options = {}) {
 }
 
 export const api = {
-  get: (endpoint) => request(endpoint, { method: 'GET' }),
+  get: (endpoint, options = {}) => request(endpoint, { method: 'GET', ...options }),
   post: (endpoint, body) => request(endpoint, { method: 'POST', body: JSON.stringify(body) }),
   put: (endpoint, body) => request(endpoint, { method: 'PUT', body: body ? JSON.stringify(body) : undefined }),
   patch: (endpoint, body) => request(endpoint, { method: 'PATCH', body: body ? JSON.stringify(body) : undefined }),

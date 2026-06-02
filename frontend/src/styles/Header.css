@@ -8,6 +8,7 @@
   z-index: 100;
   display: flex;
   align-items: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
 }
 
 .header-content {
@@ -17,15 +18,35 @@
   width: 100%;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.header-page-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+@media (max-width: 768px) {
+  .header-page-title {
+    font-size: 0.9rem;
+  }
+}
+
 .header-menu-btn {
   display: none;
   background: none;
   border: none;
   cursor: pointer;
   color: var(--text-secondary);
-  padding: 6px;
-  border-radius: 6px;
+  padding: 8px;
+  border-radius: 8px;
   align-items: center;
+  justify-content: center;
   transition: all var(--transition);
 }
 
@@ -34,13 +55,18 @@
   color: var(--text-primary);
 }
 
+.header-menu-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
 html.dark .header-menu-btn:hover {
   background: var(--gray-700);
 }
 
 .header-actions {
   display: flex;
-  gap: 12px;
+  gap: 6px;
   align-items: center;
 }
 
@@ -48,17 +74,23 @@ html.dark .header-menu-btn:hover {
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--text-secondary);
-  padding: 6px;
-  border-radius: 6px;
+  color: var(--text-muted);
+  padding: 8px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
+  justify-content: center;
   transition: all var(--transition);
 }
 
 .header-theme-toggle:hover {
   background: var(--gray-100);
   color: var(--text-primary);
+}
+
+.header-theme-toggle:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 html.dark .header-theme-toggle:hover {
@@ -70,10 +102,10 @@ html.dark .header-theme-toggle:hover {
   align-items: center;
   gap: 8px;
   padding: 8px 14px;
-  background: var(--gray-100);
-  border: 1px solid var(--border);
+  background: transparent;
+  border: 1px solid transparent;
   border-radius: var(--radius-md);
-  color: var(--text-secondary);
+  color: var(--text-muted);
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
@@ -82,16 +114,18 @@ html.dark .header-theme-toggle:hover {
 }
 
 .header-logout-btn:hover {
-  color: var(--text-primary);
-  border-color: var(--accent);
+  background: var(--gray-100);
+  color: var(--danger);
+  border-color: rgba(239,68,68,0.2);
 }
 
-html.dark .header-logout-btn {
-  background: var(--gray-700);
+.header-logout-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 html.dark .header-logout-btn:hover {
-  background: var(--gray-600);
+  background: rgba(239,68,68,0.1);
 }
 
 @media (max-width: 768px) {
