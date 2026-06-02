@@ -43,6 +43,9 @@ out/
 .DS_Store
 Thumbs.db
 
+### Env ###
+.env
+
 ### Dependencies ###
 /.pnp
 .pnp.js
