@@ -1,7 +1,8 @@
 package edu.unimagdalena.medsys.repositories;
 
-import edu.unimagdalena.medsys.entities.Patient;
-import edu.unimagdalena.medsys.enums.PatientStatus;
+import edu.unimagdalena.medsys.domain.entities.Patient;
+import edu.unimagdalena.medsys.domain.repositories.PatientRepository;
+import edu.unimagdalena.medsys.domain.enums.PatientStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ class PatientRepositoryTest extends AbstractRepositoryIT {
                         .fullName("Carlos Torres")
                         .email("carlos@gmail.com")
                         .phone("3001234567")
+                        .documentId("1045678901")
                         .status(PatientStatus.ACTIVE)
                         .createdAt(Instant.now())
                         .updatedAt(Instant.now())
@@ -42,6 +44,7 @@ class PatientRepositoryTest extends AbstractRepositoryIT {
                         .fullName("Ana Lopez")
                         .email("ana@gmail.com")
                         .phone("3009876543")
+                        .documentId("1023456789")
                         .status(PatientStatus.ACTIVE)
                         .createdAt(Instant.now())
                         .updatedAt(Instant.now())
@@ -63,6 +66,7 @@ class PatientRepositoryTest extends AbstractRepositoryIT {
                         .fullName("Luis Perez")
                         .email("luis1@gmail.com")
                         .phone("3001111111")
+                        .documentId("1001234567")
                         .status(PatientStatus.ACTIVE)
                         .createdAt(Instant.now())
                         .updatedAt(Instant.now())
@@ -74,6 +78,7 @@ class PatientRepositoryTest extends AbstractRepositoryIT {
                         .fullName("Luis Perez")
                         .email("luis2@gmail.com")
                         .phone("3002222222")
+                        .documentId("1056789012")
                         .status(PatientStatus.INACTIVE)
                         .createdAt(Instant.now())
                         .updatedAt(Instant.now())
@@ -94,6 +99,7 @@ class PatientRepositoryTest extends AbstractRepositoryIT {
                         .fullName("Maria Diaz")
                         .email("maria@gmail.com")
                         .phone("123456789")
+                        .documentId("1034567890")
                         .status(PatientStatus.ACTIVE)
                         .createdAt(Instant.now())
                         .updatedAt(Instant.now())
@@ -105,6 +111,7 @@ class PatientRepositoryTest extends AbstractRepositoryIT {
                         .fullName("Pedro Ruiz")
                         .email("pedro@gmail.com")
                         .phone("11223454565")
+                        .documentId("1067890123")
                         .status(PatientStatus.INACTIVE)
                         .createdAt(Instant.now())
                         .updatedAt(Instant.now())
@@ -125,6 +132,7 @@ class PatientRepositoryTest extends AbstractRepositoryIT {
                         .fullName("Laura Gomez")
                         .email("laura@gmail.com")
                         .phone("3005555555")
+                        .documentId("1078901234")
                         .status(PatientStatus.ACTIVE)
                         .createdAt(Instant.now())
                         .updatedAt(Instant.now())
@@ -148,6 +156,7 @@ class PatientRepositoryTest extends AbstractRepositoryIT {
                         .fullName("Jorge Luis")
                         .email("jorge@gmail.com")
                         .phone("3006666666")
+                        .documentId("1089012345")
                         .status(PatientStatus.ACTIVE)
                         .createdAt(Instant.now())
                         .updatedAt(Instant.now())

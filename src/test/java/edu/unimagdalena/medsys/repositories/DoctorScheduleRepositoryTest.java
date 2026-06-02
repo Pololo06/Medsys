@@ -1,8 +1,11 @@
 package edu.unimagdalena.medsys.repositories;
 
-import edu.unimagdalena.medsys.entities.Doctor;
-import edu.unimagdalena.medsys.entities.DoctorSchedule;
-import edu.unimagdalena.medsys.entities.Specialty;
+import edu.unimagdalena.medsys.domain.entities.Doctor;
+import edu.unimagdalena.medsys.domain.entities.DoctorSchedule;
+import edu.unimagdalena.medsys.domain.entities.Specialty;
+import edu.unimagdalena.medsys.domain.repositories.DoctorRepository;
+import edu.unimagdalena.medsys.domain.repositories.DoctorScheduleRepository;
+import edu.unimagdalena.medsys.domain.repositories.SpecialtyRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

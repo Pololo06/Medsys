@@ -1,10 +1,19 @@
+### Java / Spring Boot ###
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
+### IDE ###
+.idea/
+.vscode/
+*.iws
+*.iml
+*.ipr
+*.swp
+*.swo
+*~
 .apt_generated
 .classpath
 .factorypath
@@ -12,12 +21,6 @@ target/
 .settings
 .springBeans
 .sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
 
 ### NetBeans ###
 /nbproject/private/
@@ -29,5 +32,20 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
-.vscode/
+### Node / Frontend ###
+node_modules/
+npm-debug.log
+yarn-error.log
+dist/
+out/
+
+### OS ###
+.DS_Store
+Thumbs.db
+
+### Env ###
+.env
+
+### Dependencies ###
+/.pnp
+.pnp.js

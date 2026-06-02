@@ -1,6 +1,7 @@
 package edu.unimagdalena.medsys.repositories;
 
-import edu.unimagdalena.medsys.entities.AppointmentType;
+import edu.unimagdalena.medsys.domain.entities.AppointmentType;
+import edu.unimagdalena.medsys.domain.repositories.AppointmentTypeRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

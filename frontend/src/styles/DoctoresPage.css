@@ -1,0 +1,323 @@
+.schedule-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.schedule-modal {
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  max-width: 700px;
+  width: 95%;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.schedule-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.schedule-modal-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.schedule-modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  transition: background var(--transition);
+}
+
+.schedule-modal-close:hover {
+  background: var(--gray-100);
+}
+
+html.dark .schedule-modal-close:hover {
+  background: var(--gray-700);
+}
+
+.schedule-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+}
+
+.schedule-modal-desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.schedule-skeleton {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  padding: 32px 0;
+}
+
+.schedule-skeleton-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.schedule-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 8px 0;
+}
+
+.schedule-table thead th {
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  padding-bottom: 12px;
+  letter-spacing: 0.04em;
+}
+
+.schedule-slot-cell {
+  text-align: center;
+  padding-bottom: 6px;
+}
+
+.schedule-empty-cell {
+  text-align: center;
+  padding: 32px 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.schedule-slot {
+  display: inline-block;
+  width: 100%;
+  background: var(--brand-100);
+  color: var(--accent);
+  border-radius: 6px;
+  padding: 5px 2px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  text-align: center;
+}
+
+html.dark .schedule-slot {
+  background: rgba(29, 127, 233, 0.2);
+}
+
+.schedule-add-form {
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: var(--gray-50);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+html.dark .schedule-add-form {
+  background: #1e293b;
+}
+
+.schedule-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.schedule-form-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.schedule-input-sm {
+  width: 90px;
+  padding: 5px 8px;
+  font-size: 0.84rem;
+}
+
+.schedule-form-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.schedule-modal-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-top: 1px solid var(--border);
+}
+
+/* ── Doctor Detail Modal ───────────────────────────── */
+.doctor-detail-modal {
+  max-width: 420px;
+}
+
+.doctor-detail-avatar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.doctor-detail-avatar-circle {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: var(--brand-100);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+html.dark .doctor-detail-avatar-circle {
+  background: rgba(29, 127, 233, 0.18);
+}
+
+.doctor-detail-name {
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.doctor-detail-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.doctor-detail-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--gray-50);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+html.dark .doctor-detail-row {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: #334155;
+}
+
+html.dark .doctor-detail-name {
+  color: #f1f5f9;
+}
+
+html.dark .doctor-detail-label {
+  color: #94a3b8;
+}
+
+html.dark .doctor-detail-value {
+  color: #e2e8f0;
+}
+
+html.dark .doctor-detail-mono {
+  color: #94a3b8;
+}
+
+.doctor-detail-icon {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.doctor-detail-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  width: 90px;
+  flex-shrink: 0;
+}
+
+.doctor-detail-value {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.doctor-detail-mono {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ── Clickable doctor rows ─────────────────────────── */
+.doctor-row-clickable {
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.doctor-row-clickable:hover {
+  background: var(--gray-50);
+}
+
+html.dark .doctor-row-clickable:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ── Catalog card delete button ────────────────────── */
+.catalog-card--deletable {
+  position: relative;
+}
+
+.catalog-card-delete-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transition: opacity var(--transition), background var(--transition), color var(--transition);
+}
+
+.catalog-card--deletable:hover .catalog-card-delete-btn {
+  opacity: 1;
+}
+
+.catalog-card-delete-btn:hover {
+  background: #fee2e2;
+  color: var(--danger);
+}
+
+html.dark .catalog-card-delete-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
