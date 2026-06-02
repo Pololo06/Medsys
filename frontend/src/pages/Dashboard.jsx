@@ -1,54 +1,41 @@
 import { useState, useEffect } from 'react';
-import { Users, Stethoscope, CalendarCheck, Building2, TrendingUp, ArrowUpRight, Clock, CheckCircle } from 'lucide-react';
+import { Users, Stethoscope, CalendarCheck, Building2, TrendingUp, Clock, CheckCircle } from 'lucide-react';
 import { getAllPatients } from '../services/PatientService';
 import { getAllDoctors } from '../services/DoctorService';
 import { getAppointments } from '../services/AppointmentService';
 import { getOffices } from '../services/OfficeService';
 import { useAuth } from '../context/AuthContext';
+import { STATUS_MAP } from '../constants';
+import CardSkeleton from '../components/Skeleton/CardSkeleton';
+import TableSkeleton from '../components/Skeleton/TableSkeleton';
+import '../styles/Dashboard.css';
 
-const STATUS_CONFIG = {
-  SCHEDULED: { badge: 'badge-blue',   label: 'Programada' },
-  CONFIRMED:  { badge: 'badge-teal',   label: 'Confirmada'  },
-  COMPLETED:  { badge: 'badge-violet', label: 'Completada'  },
-  CANCELLED:  { badge: 'badge-red',    label: 'Cancelada'   },
-  NO_SHOW:    { badge: 'badge-amber',  label: 'No asistió'  },
-};
-
-function StatCard({ icon: Icon, label, value, color, bg, loading, delta }) {
+function StatCard({ icon: Icon, label, value, color, bg }) {
   return (
     <div className="stat-card">
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div className="stat-card-icon" style={{ background: bg }}>
-          <Icon size={19} color={color} strokeWidth={2} />
-        </div>
-        {!loading && delta !== undefined && (
-          <div className="stat-card-trend">
-            <ArrowUpRight size={12} />
-            <span>{delta}</span>
-          </div>
-        )}
+      <div className="stat-card-icon" style={{ background: bg }}>
+        <Icon size={19} color={color} strokeWidth={2} />
       </div>
       <div>
         <p className="stat-card-label">{label}</p>
-        {loading ? (
-          <div className="skeleton" style={{ height: 38, width: 64, borderRadius: 8, marginTop: 4 }} />
-        ) : (
-          <p className="stat-card-value">{value}</p>
-        )}
+        <p className="stat-card-value">{value}</p>
       </div>
     </div>
   );
 }
 
-function SkeletonRow() {
+function InsightCard({ icon: Icon, iconBg, iconBorder, iconColor, value, label, sublabel }) {
   return (
-    <tr>
-      {[160, 140, 100, 80, 70].map((w, i) => (
-        <td key={i} style={{ padding: '12px 16px' }}>
-          <div className="skeleton" style={{ height: 13, width: w, borderRadius: 4 }} />
-        </td>
-      ))}
-    </tr>
+    <div className="insight-card" style={{ background: iconBg, borderColor: iconBorder || 'transparent' }}>
+      <div className="insight-icon" style={{ background: iconBg, borderColor: iconBorder || iconBg }}>
+        <Icon size={18} color={iconColor} />
+      </div>
+      <div className="insight-text">
+        <p className="insight-value">{value}</p>
+        <p className="insight-label">{label}</p>
+        {sublabel && <p className="insight-sublabel">{sublabel}</p>}
+      </div>
+    </div>
   );
 }
 
@@ -84,115 +71,64 @@ export default function Dashboard() {
   const completedToday = recentAppts.filter(a => a.status === 'COMPLETED').length;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
-      {/* Welcome header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-        <div>
+    <div className="dashboard">
+      <div className="dashboard-header">
+        <div className="dashboard-welcome">
           <h1 className="page-title">
-            Bienvenido, {(user?.fullName || 'Doctor').split(' ')[0]} 👋
+            Bienvenido, {(user?.fullName || 'Doctor').split(' ')[0]}
           </h1>
-          <p className="page-subtitle" style={{ textTransform: 'capitalize', marginTop: 4 }}>
-            {fechaTexto} · {hora}
+          <p className="page-subtitle">
+            {fechaTexto} &middot; {hora}
           </p>
         </div>
 
         {!loading && todayAppts > 0 && (
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 10,
-            background: 'rgba(20,184,166,0.08)', border: '1px solid rgba(20,184,166,0.2)',
-            borderRadius: 12, padding: '10px 16px',
-          }}>
-            <Clock size={15} color="var(--accent)" />
-            <p style={{ fontSize: '0.84rem', color: 'var(--teal-600)', fontWeight: 700, margin: 0 }}>
-              {todayAppts} cita{todayAppts !== 1 ? 's' : ''} hoy
-            </p>
+          <div className="dashboard-today-badge">
+            <Clock size={15} />
+            <span>{todayAppts} cita{todayAppts !== 1 ? 's' : ''} hoy</span>
           </div>
         )}
       </div>
 
-      {/* Stat cards */}
-      <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-        <StatCard
-          icon={Users} label="Pacientes registrados" value={stats.patients}
-          color="#14b8a6" bg="rgba(20,184,166,0.1)" loading={loading}
-        />
-        <StatCard
-          icon={Stethoscope} label="Doctores activos" value={stats.doctors}
-          color="#38bdf8" bg="rgba(56,189,248,0.1)" loading={loading}
-        />
-        <StatCard
-          icon={CalendarCheck} label="Total de citas" value={stats.appointments}
-          color="#a78bfa" bg="rgba(167,139,250,0.1)" loading={loading}
-        />
-        <StatCard
-          icon={Building2} label="Consultorios" value={stats.offices}
-          color="#f59e0b" bg="rgba(245,158,11,0.1)" loading={loading}
-        />
+      <div className="dashboard-stats">
+        {loading ? (
+          <CardSkeleton count={4} />
+        ) : (
+          <>
+            <StatCard icon={Users} label="Pacientes registrados" value={stats.patients} color="#14b8a6" bg="rgba(20,184,166,0.1)" />
+            <StatCard icon={Stethoscope} label="Doctores activos" value={stats.doctors} color="#38bdf8" bg="rgba(56,189,248,0.1)" />
+            <StatCard icon={CalendarCheck} label="Total de citas" value={stats.appointments} color="#a78bfa" bg="rgba(167,139,250,0.1)" />
+            <StatCard icon={Building2} label="Consultorios" value={stats.offices} color="#f59e0b" bg="rgba(245,158,11,0.1)" />
+          </>
+        )}
       </div>
 
-      {/* Quick insights row */}
       {!loading && (
-        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-          <div style={{
-            flex: '1 1 200px',
-            background: 'var(--bg-card)', border: '1px solid var(--border)',
-            borderRadius: 'var(--radius-xl)', padding: '16px 20px',
-            display: 'flex', alignItems: 'center', gap: 14,
-          }}>
-            <div style={{
-              width: 40, height: 40, borderRadius: 10, flexShrink: 0,
-              background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <CheckCircle size={18} color="#10b981" />
-            </div>
-            <div>
-              <p style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.03em', margin: 0 }}>
-                {completedToday}
-              </p>
-              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, margin: 0, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                Completadas
-              </p>
-            </div>
-          </div>
-
-          <div style={{
-            flex: '1 1 200px',
-            background: 'linear-gradient(135deg, rgba(20,184,166,0.06) 0%, rgba(56,189,248,0.04) 100%)',
-            border: '1px solid rgba(20,184,166,0.15)',
-            borderRadius: 'var(--radius-xl)', padding: '16px 20px',
-            display: 'flex', alignItems: 'center', gap: 14,
-          }}>
-            <div style={{
-              width: 40, height: 40, borderRadius: 10, flexShrink: 0,
-              background: 'rgba(20,184,166,0.12)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <TrendingUp size={18} color="var(--accent)" />
-            </div>
-            <div>
-              <p style={{ fontSize: '0.84rem', color: 'var(--teal-600)', fontWeight: 700, margin: 0 }}>
-                {stats.appointments > 0 ? 'Sistema en operación normal' : 'Sin citas registradas'}
-              </p>
-              <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', margin: 0, fontWeight: 500, marginTop: 2 }}>
-                Todos los servicios disponibles
-              </p>
-            </div>
-          </div>
+        <div className="dashboard-insights">
+          <InsightCard
+            icon={CheckCircle} iconColor="#10b981"
+            iconBg="rgba(16,185,129,0.1)" iconBorder="rgba(16,185,129,0.2)"
+            value={completedToday} label="Completadas" sublabel="Citas finalizadas"
+          />
+          <InsightCard
+            icon={TrendingUp} iconColor="var(--accent)"
+            iconBg="linear-gradient(135deg, rgba(20,184,166,0.06) 0%, rgba(56,189,248,0.04) 100%)"
+            iconBorder="rgba(20,184,166,0.15)"
+            value={stats.appointments > 0 ? 'Sistema en operación normal' : 'Sin citas registradas'}
+            label={stats.appointments > 0 ? 'Operación normal' : 'Sin actividad'}
+            sublabel="Todos los servicios disponibles"
+          />
         </div>
       )}
 
-      {/* Recent appointments */}
-      <div className="card" style={{ overflow: 'hidden' }}>
+      <div className="card dashboard-table-card">
         <div className="card-header">
           <div>
             <h3 className="card-title">Citas recientes</h3>
-            <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 2, fontWeight: 500 }}>
-              Últimas {recentAppts.length} registradas
-            </p>
+            <p className="card-subtitle">Últimas {recentAppts.length} registradas</p>
           </div>
         </div>
-        <div style={{ overflowX: 'auto' }}>
+        <div className="table-container">
           <table className="medsys-table">
             <thead>
               <tr>
@@ -203,7 +139,7 @@ export default function Dashboard() {
             </thead>
             <tbody>
               {loading ? (
-                [1,2,3,4].map(i => <SkeletonRow key={i} />)
+                <TableSkeleton rows={4} columns={5} />
               ) : recentAppts.length === 0 ? (
                 <tr>
                   <td colSpan={5}>
@@ -215,13 +151,13 @@ export default function Dashboard() {
                 </tr>
               ) : recentAppts.map((a, i) => {
                 const fecha = a.startTime ? new Date(a.startTime) : null;
-                const st = STATUS_CONFIG[a.status] || { badge: 'badge-gray', label: a.status };
+                const st = STATUS_MAP[a.status] || { badge: 'badge-gray', label: a.status };
                 return (
                   <tr key={a.id || i}>
-                    <td style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{a.patientName || '—'}</td>
-                    <td style={{ color: 'var(--text-secondary)' }}>{a.doctorName || '—'}</td>
-                    <td style={{ color: 'var(--text-muted)' }}>{a.appointmentTypeName || '—'}</td>
-                    <td style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                    <td className="td-primary">{a.patientName || '—'}</td>
+                    <td className="td-secondary">{a.doctorName || '—'}</td>
+                    <td className="td-muted">{a.appointmentTypeName || '—'}</td>
+                    <td className="td-mono td-muted">
                       {fecha ? fecha.toLocaleDateString('es-CO', { day: '2-digit', month: 'short' }) + '  ' + fecha.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }) : '—'}
                     </td>
                     <td>

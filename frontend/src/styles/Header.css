@@ -1,18 +1,41 @@
 .header {
-  background: var(--bg-secondary, white);
-  border-bottom: 1px solid var(--border, #e5e7eb);
-  padding: 16px 24px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 60px;
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
 }
 
 .header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 100%;
+  width: 100%;
+}
+
+.header-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 6px;
+  border-radius: 6px;
+  align-items: center;
+  transition: all var(--transition);
+}
+
+.header-menu-btn:hover {
+  background: var(--gray-100);
+  color: var(--text-primary);
+}
+
+html.dark .header-menu-btn:hover {
+  background: var(--gray-700);
 }
 
 .header-actions {
@@ -25,17 +48,21 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--text-secondary, #64748b);
+  color: var(--text-secondary);
   padding: 6px;
   border-radius: 6px;
   display: flex;
   align-items: center;
-  transition: all 150ms ease;
+  transition: all var(--transition);
 }
 
 .header-theme-toggle:hover {
-  background: var(--bg-subtle, #f1f5f9);
-  color: var(--text-primary, #0f172a);
+  background: var(--gray-100);
+  color: var(--text-primary);
+}
+
+html.dark .header-theme-toggle:hover {
+  background: var(--gray-700);
 }
 
 .header-logout-btn {
@@ -43,21 +70,38 @@
   align-items: center;
   gap: 8px;
   padding: 8px 14px;
-  background: var(--bg-subtle, #f1f5f9);
-  border: 1px solid var(--border, #e5e7eb);
-  border-radius: 6px;
-  color: var(--text-secondary, #64748b);
+  background: var(--gray-100);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 150ms ease;
+  transition: all var(--transition);
   font-family: inherit;
 }
 
 .header-logout-btn:hover {
-  background: var(--bg-subtle, #f1f5f9);
-  color: var(--text-primary, #0f172a);
-  border-color: var(--color-blue, #3b9df5);
+  color: var(--text-primary);
+  border-color: var(--accent);
+}
+
+html.dark .header-logout-btn {
+  background: var(--gray-700);
+}
+
+html.dark .header-logout-btn:hover {
+  background: var(--gray-600);
+}
+
+@media (max-width: 768px) {
+  .header-menu-btn {
+    display: flex;
+  }
+
+  .header {
+    padding: 0 16px;
+  }
 }
 
 @media (max-width: 640px) {

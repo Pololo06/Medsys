@@ -1,36 +1,19 @@
 import { api } from './api';
-
-const DAY_MAP = {
-  LUN:   'MONDAY',
-  MAR:   'TUESDAY',
-  'MIÉ': 'WEDNESDAY',
-  JUE:   'THURSDAY',
-  VIE:   'FRIDAY',
-  'SÁB': 'SATURDAY',
-};
-
-const DAY_MAP_REVERSE = {
-  MONDAY:    'LUN',
-  TUESDAY:   'MAR',
-  WEDNESDAY: 'MIÉ',
-  THURSDAY:  'JUE',
-  FRIDAY:    'VIE',
-  SATURDAY:  'SÁB',
-};
+import { DAY_MAP, DAY_MAP_REVERSE, DAYS } from '../constants';
 
 export async function getDoctorSchedule(doctorId) {
   const data = await api.get(`/doctors/${doctorId}/schedules`);
-
-  const result = { LUN: [], MAR: [], 'MIÉ': [], JUE: [], VIE: [], 'SÁB': [] };
+  const result = {};
+  DAYS.forEach(d => { result[d] = []; });
   for (const slot of data) {
     const dayKey = DAY_MAP_REVERSE[slot.day];
     if (dayKey) {
       result[dayKey].push({ id: slot.id, startTime: slot.startTime, endTime: slot.endTime });
     }
   }
-  for (const key of Object.keys(result)) {
+  DAYS.forEach(key => {
     result[key].sort((a, b) => a.startTime.localeCompare(b.startTime));
-  }
+  });
   return result;
 }
 

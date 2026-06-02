@@ -1,5 +1,7 @@
 import { api } from './api';
+
 const URL = '/doctors';
+
 export const createDoctor = (fullName, specialtyId) => api.post(URL, { fullName, specialtyId });
 export const getDoctorById = (id) => api.get(`${URL}/${id}`);
 export const getAllDoctors = () => api.get(URL);

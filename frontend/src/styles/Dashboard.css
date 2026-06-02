@@ -1,0 +1,109 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.dashboard-welcome {
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-today-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(20, 184, 166, 0.08);
+  border: 1px solid rgba(20, 184, 166, 0.2);
+  border-radius: 12px;
+  padding: 10px 16px;
+  color: var(--teal-600);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.dashboard-today-badge svg {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.dashboard-stats {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.dashboard-table-card {
+  overflow: hidden;
+}
+
+.card-subtitle {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+.dashboard-insights {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.insight-card {
+  flex: 1 1 200px;
+  border-radius: var(--radius-xl);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.insight-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  border-width: 1px;
+  border-style: solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.insight-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.insight-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.insight-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.insight-sublabel {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-top: 2px;
+}

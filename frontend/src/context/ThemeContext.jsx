@@ -1,23 +1,27 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { THEME, SIDEBAR } from '../constants';
 
 const ThemeContext = createContext(null);
 
-const THEME_KEY    = 'medsys_theme';
-const SIDEBAR_KEY  = 'medsys_sidebar_collapsed';
-
 function loadTheme() {
-  try { return localStorage.getItem(THEME_KEY) || 'light'; } catch { return 'light'; }
+  try {
+    const stored = localStorage.getItem(THEME.STORAGE_KEY);
+    if (stored === 'dark' || stored === 'light') return stored;
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+    return 'light';
+  } catch {
+    return 'light';
+  }
 }
 
 function loadCollapsed() {
-  try { return localStorage.getItem(SIDEBAR_KEY) === 'true'; } catch { return false; }
+  try { return localStorage.getItem(SIDEBAR.STORAGE_KEY) === 'true'; } catch { return false; }
 }
 
 export function ThemeProvider({ children }) {
-  const [theme, setThemeState]       = useState(loadTheme);
+  const [theme, setThemeState] = useState(loadTheme);
   const [collapsed, setCollapsedState] = useState(loadCollapsed);
 
-  // Apply dark class to <html> on mount and on change
   useEffect(() => {
     const html = document.documentElement;
     if (theme === 'dark') {
@@ -30,7 +34,7 @@ export function ThemeProvider({ children }) {
   const toggleTheme = useCallback(() => {
     setThemeState(prev => {
       const next = prev === 'light' ? 'dark' : 'light';
-      localStorage.setItem(THEME_KEY, next);
+      try { localStorage.setItem(THEME.STORAGE_KEY, next); } catch {}
       return next;
     });
   }, []);
@@ -38,13 +42,18 @@ export function ThemeProvider({ children }) {
   const toggleSidebar = useCallback(() => {
     setCollapsedState(prev => {
       const next = !prev;
-      localStorage.setItem(SIDEBAR_KEY, String(next));
+      try { localStorage.setItem(SIDEBAR.STORAGE_KEY, String(next)); } catch {}
       return next;
     });
   }, []);
 
+  const setCollapsed = useCallback(value => {
+    setCollapsedState(value);
+    try { localStorage.setItem(SIDEBAR.STORAGE_KEY, String(value)); } catch {}
+  }, []);
+
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, collapsed, toggleSidebar }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, collapsed, toggleSidebar, setCollapsed }}>
       {children}
     </ThemeContext.Provider>
   );

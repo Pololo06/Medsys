@@ -1,33 +1,41 @@
-export const validateEmail = (email) => {
+export const validateEmail = (value) => {
+  if (!value || !value.trim()) return 'El correo electrónico es obligatorio.';
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+  if (!emailRegex.test(value.trim())) return 'Ingresa un correo válido.';
+  return null;
 };
 
-export const validatePassword = (password) => {
-  return password && password.length >= 6;
+export const validatePassword = (value) => {
+  if (!value) return 'La contraseña es obligatoria.';
+  if (value.length < 6) return 'La contraseña debe tener al menos 6 caracteres.';
+  return null;
 };
 
-export const validateFullName = (name) => {
-  return name && name.trim().length >= 3 && !/\d/.test(name);
+export const validateFullName = (value) => {
+  if (!value || !value.trim()) return 'El nombre completo es obligatorio.';
+  if (value.trim().length < 3) return 'El nombre debe tener al menos 3 caracteres.';
+  if (/\d/.test(value)) return 'El nombre no debe contener números.';
+  return null;
 };
 
-export const validatePhoneNumber = (phone) => {
-  const cleanPhone = phone.replace(/\D/g, '');
-  return cleanPhone.length === 10;
+export const validatePhone = (value) => {
+  if (!value || !value.trim()) return 'El teléfono es obligatorio.';
+  const cleanPhone = value.replace(/\D/g, '');
+  if (cleanPhone.length !== 10) return 'El teléfono debe tener exactamente 10 dígitos.';
+  return null;
 };
 
-export const validateForm = (formData, schema) => {
+export const validateForm = (fields) => {
   const errors = {};
-  
-  Object.keys(schema).forEach(field => {
-    const validator = schema[field];
-    if (!validator(formData[field])) {
-      errors[field] = true;
+  Object.entries(fields).forEach(([fieldName, value]) => {
+    if (fieldName === 'email') errors[fieldName] = validateEmail(value);
+    else if (fieldName === 'password') errors[fieldName] = validatePassword(value);
+    else if (fieldName === 'fullName') errors[fieldName] = validateFullName(value);
+    else if (fieldName === 'phone') errors[fieldName] = validatePhone(value);
+    else if (!value || (typeof value === 'string' && !value.trim())) {
+      errors[fieldName] = 'Este campo es obligatorio.';
     }
   });
-  
-  return {
-    isValid: Object.keys(errors).length === 0,
-    errors
-  };
+  Object.keys(errors).forEach(key => { if (errors[key] === null) delete errors[key]; });
+  return errors;
 };

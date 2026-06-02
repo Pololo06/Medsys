@@ -59,7 +59,7 @@
   flex-shrink: 0;
 }
 
-.login-logo-text {
+.logo-text {
   color: #f1f5f9;
   font-weight: 700;
   font-size: 1.1rem;
@@ -119,6 +119,12 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 10px;
+}
+
+.login-stat-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
 }
 
 .login-stat-value {
@@ -219,6 +225,10 @@
   background: #fff;
 }
 
+.login-form-input.input-error {
+  border-color: #ef4444 !important;
+}
+
 .login-form-input-icon {
   position: absolute;
   left: 12px;
@@ -248,32 +258,6 @@
 .login-submit-btn {
   width: 100%;
   margin-top: 6px;
-  padding: 11px 20px;
-  background: linear-gradient(135deg, #3b9df5, #1d7fe9);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 0.9rem;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-family: inherit;
-  box-shadow: 0 4px 14px rgba(29, 127, 233, 0.35);
-  transition: all 150ms ease;
-}
-
-.login-submit-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(29, 127, 233, 0.45);
-}
-
-.login-submit-btn:disabled {
-  background: #93c5fd;
-  cursor: not-allowed;
-  box-shadow: none;
 }
 
 .login-spinner {
@@ -283,10 +267,6 @@
   border-top-color: white;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }
 
 .login-footer-note {
@@ -329,4 +309,25 @@
 
 .login-form-error.show {
   display: block;
+}
+
+@media (max-width: 900px) {
+  .login-left-panel {
+    display: none;
+  }
+
+  .login-right-panel {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .login-card {
+    box-shadow: none;
+    background: transparent;
+    padding: 24px 20px;
+  }
+
+  .login-container {
+    justify-content: center;
+  }
 }

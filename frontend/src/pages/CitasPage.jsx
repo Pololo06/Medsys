@@ -6,16 +6,9 @@ import { getAllPatients } from '../services/PatientService';
 import { getAllDoctors } from '../services/DoctorService';
 import { getOffices } from '../services/OfficeService';
 import { getAppointmentTypes } from '../services/AppointmentTypeService';
+import { STATUS_MAP } from '../constants';
 import ConfirmDialog from '../components/ConfirmDialog';
-
-
-const STATUS_MAP = {
-  SCHEDULED: { badge: 'badge-blue',   label: 'Programada' },
-  CONFIRMED:  { badge: 'badge-teal',   label: 'Confirmada'  },
-  COMPLETED:  { badge: 'badge-violet', label: 'Completada'  },
-  CANCELLED:  { badge: 'badge-red',    label: 'Cancelada'   },
-  NO_SHOW:    { badge: 'badge-amber',  label: 'No asistió'  },
-};
+import TableSkeleton from '../components/Skeleton/TableSkeleton';
 
 export default function CitasPage() {
   const [citas, setCitas]           = useState([]);
@@ -32,9 +25,7 @@ export default function CitasPage() {
   const [form, setForm]             = useState({ patientId: '', doctorId: '', officeId: '', appointmentTypeId: '', startTime: '' });
   const [error, setError]           = useState('');
   const [saving, setSaving]         = useState(false);
-
-  // confirm dialogs for actions
-  const [confirmAction, setConfirmAction] = useState(null); // { type, cita }
+  const [confirmAction, setConfirmAction] = useState(null);
 
   async function fetchData() {
     setLoading(true);
@@ -96,10 +87,10 @@ export default function CitasPage() {
           <h1 className="page-title">Citas</h1>
           <p className="page-subtitle">{citas.length} citas en total</p>
         </div>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Filter size={14} style={{ color: 'var(--text-muted)' }} />
-            <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className="input" style={{ width: 160 }}>
+        <div className="page-actions">
+          <div className="filter-group">
+            <Filter size={14} className="filter-icon" />
+            <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className="input input-select">
               <option value="">Todos los estados</option>
               {Object.entries(STATUS_MAP).map(([v, { label }]) => <option key={v} value={v}>{label}</option>)}
             </select>
@@ -116,37 +107,30 @@ export default function CitasPage() {
             <tr>{['Paciente', 'Doctor', 'Tipo', 'Fecha y hora', 'Estado', 'Acciones'].map(h => <th key={h}>{h}</th>)}</tr>
           </thead>
           <tbody>
-            {loading ? [1,2,3,4].map(i => (
-              <tr key={i}>{[160,120,100,130,70,120].map((w,j) => <td key={j} style={{ padding: '13px 16px' }}><div className="skeleton" style={{ height: 14, width: w, borderRadius: 4 }} /></td>)}</tr>
-            )) : filtered.length === 0 ? (
+            {loading ? <TableSkeleton rows={4} columns={6} /> : filtered.length === 0 ? (
               <tr><td colSpan={6}><div className="empty-state"><div className="empty-state-icon"><CalendarCheck size={24} /></div><p className="empty-state-text">{filterStatus ? 'No hay citas con ese estado.' : 'No hay citas registradas.'}</p></div></td></tr>
             ) : filtered.map(c => {
               const fecha = c.startTime ? new Date(c.startTime) : null;
-              const st = STATUS_MAP[c.status] || { bg: '#f1f5f9', text: '#64748b', label: c.status };
+              const st = STATUS_MAP[c.status] || { badge: 'badge-gray', label: c.status };
               return (
                 <tr key={c.id}>
-                  <td style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{c.patientName || '—'}</td>
+                  <td className="td-primary">{c.patientName || '—'}</td>
                   <td>{c.doctorName || '—'}</td>
                   <td>{c.appointmentTypeName || '—'}</td>
-                  <td style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                  <td className="td-mono td-secondary">
                     {fecha ? fecha.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + fecha.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }) : '—'}
                   </td>
                   <td><span className={`badge ${st.badge || 'badge-gray'}`}>{st.label}</span></td>
                   <td>
-                    <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                    <div className="table-actions">
                       {c.status === 'SCHEDULED' && <>
-                        <button className="btn btn-sm" style={{ className: 'badge-green', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: 700, fontSize: '0.75rem', padding: '4px 10px' }}
-                          onClick={() => setConfirmAction({ type: 'confirm', cita: c })}>Confirmar</button>
-                        <button className="btn btn-sm btn-danger"
-                          onClick={() => { setSelectedCita(c); setCancelReason(''); setIsCancelModal(true); }}>Cancelar</button>
+                        <button className="btn btn-sm btn-action btn-action-confirm" onClick={() => setConfirmAction({ type: 'confirm', cita: c })}>Confirmar</button>
+                        <button className="btn btn-sm btn-danger" onClick={() => { setSelectedCita(c); setCancelReason(''); setIsCancelModal(true); }}>Cancelar</button>
                       </>}
                       {c.status === 'CONFIRMED' && <>
-                        <button className="btn btn-sm" style={{ background: '#ede9fe', color: '#7c3aed', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: 700, fontSize: '0.75rem', padding: '4px 10px' }}
-                          onClick={() => setConfirmAction({ type: 'complete', cita: c })}>Completar</button>
-                        <button className="btn btn-sm" style={{ background: '#ffedd5', color: '#c2410c', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: 700, fontSize: '0.75rem', padding: '4px 10px' }}
-                          onClick={() => setConfirmAction({ type: 'noshow', cita: c })}>No asistió</button>
-                        <button className="btn btn-sm btn-danger"
-                          onClick={() => { setSelectedCita(c); setCancelReason(''); setIsCancelModal(true); }}>Cancelar</button>
+                        <button className="btn btn-sm btn-action btn-action-complete" onClick={() => setConfirmAction({ type: 'complete', cita: c })}>Completar</button>
+                        <button className="btn btn-sm btn-action btn-action-noshow" onClick={() => setConfirmAction({ type: 'noshow', cita: c })}>No asistió</button>
+                        <button className="btn btn-sm btn-danger" onClick={() => { setSelectedCita(c); setCancelReason(''); setIsCancelModal(true); }}>Cancelar</button>
                       </>}
                     </div>
                   </td>
@@ -157,70 +141,72 @@ export default function CitasPage() {
         </table>
       </div>
 
-      {/* Nueva cita modal */}
       {isModalOpen && (
         <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setIsModalOpen(false)}>
           <div className="modal">
-            <div className="modal-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}><h3 className="modal-title">Nueva Cita</h3>
-              <button onClick={closeModal} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", padding: 4, borderRadius: 6, display: "flex" }}><X size={18} /></button></div>
+            <div className="modal-header">
+              <h3 className="modal-title">Nueva Cita</h3>
+              <button onClick={closeModal} className="modal-close-btn" aria-label="Cerrar"><X size={18} /></button>
+            </div>
             <div className="modal-body">
-              {error && <div className="alert alert-error" style={{ marginBottom: 14 }}>{error}</div>}
+              {error && <div className="alert alert-error">{error}</div>}
               <div className="form-group">
-                <label className="input-label">Paciente *</label>
-                <select value={form.patientId} onChange={e => setForm({...form, patientId: e.target.value})} className="input">
+                <label className="input-label" htmlFor="cita-patient">Paciente *</label>
+                <select id="cita-patient" value={form.patientId} onChange={e => setForm({...form, patientId: e.target.value})} className="input">
                   <option value="">Selecciona un paciente</option>
                   {patients.map(p => <option key={p.id} value={p.id}>{p.fullName}</option>)}
                 </select>
               </div>
               <div className="form-group">
-                <label className="input-label">Doctor *</label>
-                <select value={form.doctorId} onChange={e => setForm({...form, doctorId: e.target.value})} className="input">
+                <label className="input-label" htmlFor="cita-doctor">Doctor *</label>
+                <select id="cita-doctor" value={form.doctorId} onChange={e => setForm({...form, doctorId: e.target.value})} className="input">
                   <option value="">Selecciona un doctor</option>
                   {doctors.map(d => <option key={d.id} value={d.id}>{d.fullName}{d.specialtyName ? ` — ${d.specialtyName}` : ''}</option>)}
                 </select>
               </div>
               <div className="form-group">
-                <label className="input-label">Tipo de cita *</label>
-                <select value={form.appointmentTypeId} onChange={e => setForm({...form, appointmentTypeId: e.target.value})} className="input">
+                <label className="input-label" htmlFor="cita-type">Tipo de cita *</label>
+                <select id="cita-type" value={form.appointmentTypeId} onChange={e => setForm({...form, appointmentTypeId: e.target.value})} className="input">
                   <option value="">Selecciona tipo</option>
                   {types.map(t => <option key={t.id} value={t.id}>{t.name} ({t.durationMinutes} min)</option>)}
                 </select>
               </div>
               <div className="form-group">
-                <label className="input-label">Consultorio *</label>
-                <select value={form.officeId} onChange={e => setForm({...form, officeId: e.target.value})} className="input">
+                <label className="input-label" htmlFor="cita-office">Consultorio *</label>
+                <select id="cita-office" value={form.officeId} onChange={e => setForm({...form, officeId: e.target.value})} className="input">
                   <option value="">Selecciona consultorio</option>
                   {offices.map(o => <option key={o.id} value={o.id}>{o.name}{o.location ? ` — ${o.location}` : ''}</option>)}
                 </select>
               </div>
               <div className="form-group">
-                <label className="input-label">Fecha y hora *</label>
-                <input type="datetime-local" value={form.startTime} onChange={e => setForm({...form, startTime: e.target.value})} className="input" />
+                <label className="input-label" htmlFor="cita-datetime">Fecha y hora *</label>
+                <input id="cita-datetime" type="datetime-local" value={form.startTime} onChange={e => setForm({...form, startTime: e.target.value})} className="input" />
               </div>
             </div>
             <div className="modal-footer">
               <button className="btn btn-secondary" onClick={() => setIsModalOpen(false)}>Cancelar</button>
               <button className="btn btn-primary" onClick={handleCreate} disabled={saving}>
-                {saving ? <><span style={{ width: 14, height: 14, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.7s linear infinite', display: 'inline-block' }} /> Guardando...</> : 'Crear Cita'}
+                {saving ? 'Guardando...' : 'Crear Cita'}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Cancelar modal */}
       {isCancelModal && (
         <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setIsCancelModal(false)}>
-          <div className="modal" style={{ maxWidth: 400 }}>
-            <div className="modal-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}><h3 className="modal-title">Cancelar Cita</h3>
-              <button onClick={closeModal} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", padding: 4, borderRadius: 6, display: "flex" }}><X size={18} /></button></div>
+          <div className="modal modal-sm">
+            <div className="modal-header">
+              <h3 className="modal-title">Cancelar Cita</h3>
+              <button onClick={closeModal} className="modal-close-btn" aria-label="Cerrar"><X size={18} /></button>
+            </div>
             <div className="modal-body">
-              <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: 14 }}>
+              <p className="cancel-message">
                 ¿Estás seguro de cancelar la cita de <strong>{selectedCita?.patientName}</strong>?
               </p>
               <div className="form-group">
-                <label className="input-label">Motivo de cancelación *</label>
-                <textarea value={cancelReason} onChange={e => setCancelReason(e.target.value)} className="input" rows={3} placeholder="Describe el motivo..." style={{ resize: 'vertical' }} />
+                <label className="input-label" htmlFor="cancel-reason">Motivo de cancelación *</label>
+                <textarea id="cancel-reason" value={cancelReason} onChange={e => setCancelReason(e.target.value)} className="input" rows={3} placeholder="Describe el motivo..." />
               </div>
             </div>
             <div className="modal-footer">
@@ -231,7 +217,6 @@ export default function CitasPage() {
         </div>
       )}
 
-      {/* Confirm action dialog */}
       <ConfirmDialog
         isOpen={!!confirmAction}
         onClose={() => setConfirmAction(null)}

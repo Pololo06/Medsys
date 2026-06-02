@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { TOAST_CONFIG, ROUTES } from './constants';
 import ErrorBoundary from './components/ErrorBoundary';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
@@ -23,7 +24,7 @@ function App() {
         <AuthProvider>
           <BrowserRouter>
             <Toaster
-              position="top-right"
+              position={TOAST_CONFIG.position}
               toastOptions={{
                 style: {
                   borderRadius: '10px',
@@ -39,26 +40,26 @@ function App() {
                 error: {
                   iconTheme: { primary: '#ef4444', secondary: '#0f172a' },
                 },
-                duration: 3500,
+                duration: TOAST_CONFIG.duration,
               }}
             />
             <Routes>
-              <Route path="/login" element={<LoginPage />} />
+              <Route path={ROUTES.LOGIN} element={<LoginPage />} />
               <Route
                 path="/*"
                 element={
                   <ProtectedRoute>
                     <Layout>
                       <Routes>
-                        <Route path="/" element={<Dashboard />} />
-                        <Route path="/pacientes" element={<PacientesPage />} />
-                        <Route path="/doctores" element={<DoctoresPage />} />
-                        <Route path="/catalogo" element={<CatalogoPage />} />
-                        <Route path="/citas" element={<CitasPage />} />
-                        <Route path="/consultorios" element={<ConsultoriosPage />} />
-                        <Route path="/disponibilidad" element={<DisponibilidadPage />} />
-                        <Route path="/reportes" element={<ReportesPage />} />
-                        <Route path="*" element={<Navigate to="/" replace />} />
+                        <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
+                        <Route path={ROUTES.PATIENTS} element={<PacientesPage />} />
+                        <Route path={ROUTES.DOCTORS} element={<DoctoresPage />} />
+                        <Route path={ROUTES.CATALOG} element={<CatalogoPage />} />
+                        <Route path={ROUTES.APPOINTMENTS} element={<CitasPage />} />
+                        <Route path={ROUTES.OFFICES} element={<ConsultoriosPage />} />
+                        <Route path={ROUTES.AVAILABILITY} element={<DisponibilidadPage />} />
+                        <Route path={ROUTES.REPORTS} element={<ReportesPage />} />
+                        <Route path="*" element={<Navigate to={ROUTES.DASHBOARD} replace />} />
                       </Routes>
                     </Layout>
                   </ProtectedRoute>

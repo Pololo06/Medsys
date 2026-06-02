@@ -18,39 +18,31 @@ export default function LoginPage() {
 
   const handleBlur = (field) => {
     const newErrors = { ...errors };
-    if (field === 'email' && email && !validateEmail(email)) {
-      newErrors.email = true;
-    } else {
-      delete newErrors.email;
+    if (field === 'email') {
+      const err = email ? validateEmail(email) : null;
+      if (err) newErrors.email = err;
+      else delete newErrors.email;
     }
-    if (field === 'password' && password && !validatePassword(password)) {
-      newErrors.password = true;
-    } else {
-      delete newErrors.password;
+    if (field === 'password') {
+      const err = password ? validatePassword(password) : null;
+      if (err) newErrors.password = err;
+      else delete newErrors.password;
     }
     setErrors(newErrors);
   };
 
   async function handleSubmit(e) {
     e.preventDefault();
-    
-    if (!email || !password) {
-      toast.error('Por favor ingresa tu correo y contraseña.');
-      return;
-    }
-    
-    if (!validateEmail(email)) {
-      setErrors({ ...errors, email: true });
-      toast.error('Por favor ingresa un correo válido.');
-      return;
-    }
-    
-    if (!validatePassword(password)) {
-      setErrors({ ...errors, password: true });
-      toast.error('La contraseña debe tener al menos 6 caracteres.');
-      return;
-    }
-    
+
+    const emailErr = validateEmail(email);
+    const passwordErr = validatePassword(password);
+    const newErrors = {};
+    if (emailErr) newErrors.email = emailErr;
+    if (passwordErr) newErrors.password = passwordErr;
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) return;
+
     setLoading(true);
     try {
       const data = await login(email, password);
@@ -74,7 +66,7 @@ export default function LoginPage() {
           <div className="login-logo-box">
             <Activity size={18} color="white" strokeWidth={2.5} />
           </div>
-          <span className="login-logo-text">MedSys</span>
+          <span className="logo-text">MedSys</span>
         </div>
 
         <div className="login-headline">
@@ -93,7 +85,7 @@ export default function LoginPage() {
           ].map(({ value, label, color }) => (
             <div key={label} className="login-stat-card">
               <div className="login-stat-icon" style={{ background: color + '20' }}>
-                <div style={{ width: 8, height: 8, borderRadius: '50%', background: color }} />
+                <div className="login-stat-dot" style={{ background: color }} />
               </div>
               <p className="login-stat-value">{value}</p>
               <p className="login-stat-label">{label}</p>
@@ -111,10 +103,11 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="login-form">
             <div className="login-form-group">
-              <label className="login-form-label">Correo electrónico</label>
+              <label className="login-form-label" htmlFor="login-email">Correo electrónico</label>
               <div className="login-form-input-wrapper">
                 <Mail size={15} className="login-form-input-icon" />
                 <input
+                  id="login-email"
                   type="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
@@ -122,42 +115,42 @@ export default function LoginPage() {
                   placeholder="tu@correo.com"
                   autoComplete="username"
                   autoFocus
-                  className={`login-form-input ${errors.email ? 'error' : ''}`}
-                  style={errors.email ? { borderColor: '#ef4444' } : {}}
+                  className={`login-form-input ${errors.email ? 'input-error' : ''}`}
                 />
               </div>
-              {errors.email && <span className="login-form-error show">Ingresa un correo válido</span>}
+              {errors.email && <span className="login-form-error show">{errors.email}</span>}
             </div>
 
             <div className="login-form-group">
-              <label className="login-form-label">Contraseña</label>
+              <label className="login-form-label" htmlFor="login-password">Contraseña</label>
               <div className="login-form-input-wrapper">
                 <Lock size={15} className="login-form-input-icon" />
                 <input
+                  id="login-password"
                   type={showPwd ? 'text' : 'password'}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   onBlur={() => handleBlur('password')}
                   placeholder="••••••••"
                   autoComplete="current-password"
-                  className={`login-form-input ${errors.password ? 'error' : ''}`}
-                  style={errors.password ? { borderColor: '#ef4444' } : {}}
+                  className={`login-form-input ${errors.password ? 'input-error' : ''}`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPwd(p => !p)}
                   className="login-password-toggle"
+                  aria-label={showPwd ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 >
                   {showPwd ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
-              {errors.password && <span className="login-form-error show">Mínimo 6 caracteres</span>}
+              {errors.password && <span className="login-form-error show">{errors.password}</span>}
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="login-submit-btn"
+              className="btn btn-primary login-submit-btn"
             >
               {loading ? (
                 <>
@@ -174,7 +167,7 @@ export default function LoginPage() {
           </form>
 
           <div className="login-footer-note">
-            <span className="login-footer-note-icon">🔒</span>
+            <span className="login-footer-note-icon" aria-hidden="true">🔒</span>
             <p className="login-footer-note-text">
               Acceso restringido al personal autorizado de la institución.
             </p>
