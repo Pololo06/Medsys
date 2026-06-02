@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
                 .toList();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ApiError.of(HttpStatus.BAD_REQUEST, "Validation failed", req.getRequestURI(), violations));
+                .body(ApiError.of(HttpStatus.BAD_REQUEST, "Error de validación en los datos enviados", req.getRequestURI(), violations));
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
@@ -61,15 +61,20 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ApiError.of(HttpStatus.BAD_REQUEST,
-                        "Missing parameter: " + ex.getParameterName(),
+                        "Parámetro requerido ausente: " + ex.getParameterName(),
                         req.getRequestURI(),
                         null));
     }
 
+    // BUG FIX: El handler genérico ya no expone ex.getMessage() al cliente,
+    // evitando filtrar detalles internos. El error real queda solo en el log.
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGeneric(Exception ex, HttpServletRequest req) {
-        log.error("Unhandled exception for request {}: {}", req.getRequestURI(), ex.getMessage(), ex);
+        log.error("Excepción no controlada en {}: {}", req.getRequestURI(), ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiError.of(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), req.getRequestURI(), null));
+                .body(ApiError.of(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "Ocurrió un error interno. Por favor, intente más tarde.",
+                        req.getRequestURI(),
+                        null));
     }
 }

@@ -28,7 +28,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
                        AccessDeniedException accessDeniedException) throws IOException {
         var apiError = ApiError.of(
                 HttpStatus.FORBIDDEN,
-                "You do not have permission to access this resource",
+                "No tiene permisos para acceder a este recurso",
                 request.getRequestURI(),
                 null
         );

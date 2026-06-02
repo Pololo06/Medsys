@@ -28,7 +28,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                          AuthenticationException authException) throws IOException {
         var apiError = ApiError.of(
                 HttpStatus.UNAUTHORIZED,
-                "Authentication is required to access this resource",
+                "Se requiere autenticación para acceder a este recurso",
                 request.getRequestURI(),
                 null
         );

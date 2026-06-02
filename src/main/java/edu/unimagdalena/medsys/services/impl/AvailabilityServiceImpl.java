@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,9 +42,18 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         var bookedAppointments = appointmentRepository.findActiveAppointmentsByDoctorAndDay(
                 doctorId, dayStart, dayEnd);
 
-        List<AvailabilitySlotResponse> availableSlots = new ArrayList<>();
+        // BUG FIX 6: Ordenar los schedules por startTime para evitar slots duplicados
+        // cuando hay horarios adyacentes (ej. 08:00-12:00 y 12:00-16:00 producen
+        // el slot 12:00 dos veces sin esta ordenación y deduplicación).
+        var sortedSchedules = schedules.stream()
+                .sorted(Comparator.comparing(s -> s.getStartTime()))
+                .toList();
 
-        for (var schedule : schedules) {
+        List<AvailabilitySlotResponse> availableSlots = new ArrayList<>();
+        // Rastreamos el último slotStart añadido para evitar duplicados exactos
+        LocalDateTime lastAdded = null;
+
+        for (var schedule : sortedSchedules) {
             var current = date.atTime(schedule.getStartTime());
             var scheduleEnd = date.atTime(schedule.getEndTime());
 
@@ -50,12 +61,19 @@ public class AvailabilityServiceImpl implements AvailabilityService {
                 var slotStart = current;
                 var slotEnd = current.plusMinutes(durationMinutes);
 
+                // Evitar slot duplicado si ya fue generado por un schedule adyacente anterior
+                if (slotStart.equals(lastAdded)) {
+                    current = current.plusMinutes(durationMinutes);
+                    continue;
+                }
+
                 boolean isBooked = bookedAppointments.stream().anyMatch(a ->
                         a.getStartTime().isBefore(slotEnd) && a.getEndTime().isAfter(slotStart)
                 );
 
                 if (!isBooked) {
                     availableSlots.add(new AvailabilitySlotResponse(slotStart, slotEnd));
+                    lastAdded = slotStart;
                 }
 
                 current = current.plusMinutes(durationMinutes);

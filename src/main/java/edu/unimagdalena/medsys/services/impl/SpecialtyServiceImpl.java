@@ -56,7 +56,7 @@ public class SpecialtyServiceImpl implements SpecialtyService {
             specialtyRepository.deleteById(id);
             specialtyRepository.flush();
         } catch (DataIntegrityViolationException ex) {
-            throw new ConflictException("No se puede eliminar la especialidad porque está asignada a uno o más doctores.");
+            throw new ConflictException("No se puede eliminar la especialidad porque está asignada a uno o más médicos.");
         }
     }
 }

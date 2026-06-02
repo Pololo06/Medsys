@@ -42,6 +42,7 @@ public class DoctorScheduleServiceImpl implements DoctorScheduleService {
                 .map(DoctorScheduleMapper::toResponse)
                 .toList();
     }
+
     @Override
     @Transactional(readOnly = true)
     public List<DoctorScheduleResponse> findByDoctorAndDay(UUID doctorId, DayOfWeek day) {

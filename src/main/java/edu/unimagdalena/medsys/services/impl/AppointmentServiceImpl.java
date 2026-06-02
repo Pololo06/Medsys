@@ -42,19 +42,19 @@ public class AppointmentServiceImpl implements AppointmentService {
         var patient = patientRepository.findById(req.patientId())
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + req.patientId()));
         if (patient.getStatus() != PatientStatus.ACTIVE) {
-            throw new BusinessException("Patient is not active");
+            throw new BusinessException("El paciente no está activo");
         }
 
         var doctor = doctorRepository.findById(req.doctorId())
                 .orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + req.doctorId()));
         if (!doctor.isActive()) {
-            throw new BusinessException("Doctor is not active");
+            throw new BusinessException("El médico no está activo");
         }
 
         var office = officeRepository.findById(req.officeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Office not found with id: " + req.officeId()));
         if (office.getStatus() != OfficeStatus.AVAILABLE) {
-            throw new BusinessException("Office is not available");
+            throw new BusinessException("El consultorio no está disponible");
         }
 
         var appointmentType = appointmentTypeRepository.findById(req.appointmentTypeId())
@@ -62,31 +62,31 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         var startTime = req.startTime();
         if (!startTime.isAfter(LocalDateTime.now())) {
-            throw new BusinessException("Appointment cannot be scheduled in the past");
+            throw new BusinessException("No se puede agendar una cita en el pasado");
         }
 
         var endTime = startTime.plusMinutes(appointmentType.getDurationMinutes());
 
         var schedules = doctorScheduleRepository.findByDoctorIdAndDay(req.doctorId(), startTime.getDayOfWeek());
         if (schedules.isEmpty()) {
-            throw new BusinessException("Doctor has no schedule configured for " + startTime.getDayOfWeek());
+            throw new BusinessException("El médico no tiene horario configurado para el día " + startTime.getDayOfWeek());
         }
 
         boolean withinSchedule = schedules.stream().anyMatch(s -> fitsInSchedule(s, startTime.toLocalTime(), endTime.toLocalTime()));
         if (!withinSchedule) {
-            throw new BusinessException("Appointment is outside the doctor's working hours");
+            throw new BusinessException("La cita está fuera del horario de atención del médico");
         }
 
         if (appointmentRepository.existsDoctorOverlap(req.doctorId(), startTime, endTime)) {
-            throw new ConflictException("Doctor already has an appointment in that time slot");
+            throw new ConflictException("El médico ya tiene una cita en ese horario");
         }
 
         if (appointmentRepository.existsOfficeOverlap(req.officeId(), startTime, endTime)) {
-            throw new ConflictException("Office is already occupied in that time slot");
+            throw new ConflictException("El consultorio ya está ocupado en ese horario");
         }
 
         if (appointmentRepository.existsPatientOverlap(req.patientId(), startTime, endTime)) {
-            throw new ConflictException("Patient already has an appointment in that time slot");
+            throw new ConflictException("El paciente ya tiene una cita en ese horario");
         }
 
         var appointment = Appointment.builder()
@@ -125,7 +125,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         var appointment = appointmentRepository.findByIdWithJoins(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
         if (appointment.getStatus() != AppointmentStatus.SCHEDULED) {
-            throw new BusinessException("Only SCHEDULED appointments can be confirmed. Current status: " + appointment.getStatus());
+            throw new BusinessException("Solo se pueden confirmar citas en estado SCHEDULED. Estado actual: " + appointment.getStatus());
         }
         appointment.setStatus(AppointmentStatus.CONFIRMED);
         appointment.setUpdatedAt(Instant.now());
@@ -135,13 +135,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public AppointmentResponse cancel(UUID id, CancelAppointmentRequest req) {
         if (req.reason() == null || req.reason().isBlank()) {
-            throw new BusinessException("Cancellation reason is required");
+            throw new BusinessException("El motivo de cancelación es obligatorio");
         }
         var appointment = appointmentRepository.findByIdWithJoins(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
         if (appointment.getStatus() != AppointmentStatus.SCHEDULED
                 && appointment.getStatus() != AppointmentStatus.CONFIRMED) {
-            throw new BusinessException("Only SCHEDULED or CONFIRMED appointments can be cancelled. Current status: " + appointment.getStatus());
+            throw new BusinessException("Solo se pueden cancelar citas en estado SCHEDULED o CONFIRMED. Estado actual: " + appointment.getStatus());
         }
         appointment.setStatus(AppointmentStatus.CANCELLED);
         appointment.setCancellationReason(req.reason());
@@ -154,10 +154,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         var appointment = appointmentRepository.findByIdWithJoins(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
         if (appointment.getStatus() != AppointmentStatus.CONFIRMED) {
-            throw new BusinessException("Only CONFIRMED appointments can be completed. Current status: " + appointment.getStatus());
+            throw new BusinessException("Solo se pueden completar citas en estado CONFIRMED. Estado actual: " + appointment.getStatus());
         }
         if (LocalDateTime.now().isBefore(appointment.getStartTime())) {
-            throw new BusinessException("Cannot complete an appointment before its scheduled start time");
+            throw new BusinessException("No se puede completar una cita antes de su hora de inicio");
         }
         appointment.setStatus(AppointmentStatus.COMPLETED);
         appointment.setObservation(req.notes());
@@ -170,10 +170,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         var appointment = appointmentRepository.findByIdWithJoins(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
         if (appointment.getStatus() != AppointmentStatus.CONFIRMED) {
-            throw new BusinessException("Only CONFIRMED appointments can be marked as NO_SHOW. Current status: " + appointment.getStatus());
+            throw new BusinessException("Solo se pueden marcar como NO_SHOW citas en estado CONFIRMED. Estado actual: " + appointment.getStatus());
         }
         if (LocalDateTime.now().isBefore(appointment.getStartTime())) {
-            throw new BusinessException("Cannot mark as NO_SHOW before the appointment's scheduled start time");
+            throw new BusinessException("No se puede marcar como NO_SHOW antes de la hora de inicio de la cita");
         }
         appointment.setStatus(AppointmentStatus.NO_SHOW);
         appointment.setUpdatedAt(Instant.now());
