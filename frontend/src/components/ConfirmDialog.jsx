@@ -2,7 +2,18 @@ import { useState } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import '../styles/Shared.css';
 
-export default function ConfirmDialog({ isOpen, onClose, onConfirm, title, message, confirmLabel = 'Confirmar', variant = 'danger' }) {
+export default function ConfirmDialog({
+  isOpen,
+  onClose,
+  onConfirm,
+  title,
+  message,
+  confirmLabel = 'Confirmar',
+  // BUG FIX: Se agrega loadingLabel para que el texto "Procesando..." sea genérico
+  // y no siempre diga "Eliminando..." cuando se usa para confirmar/marcar no-show de citas.
+  loadingLabel,
+  variant = 'danger'
+}) {
   const [confirming, setConfirming] = useState(false);
 
   if (!isOpen) return null;
@@ -15,6 +26,9 @@ export default function ConfirmDialog({ isOpen, onClose, onConfirm, title, messa
       setConfirming(false);
     }
   }
+
+  // Si no se pasa loadingLabel, derivarlo del confirmLabel para mayor claridad
+  const activeLoadingLabel = loadingLabel || `${confirmLabel}...`;
 
   return (
     <div className="modal-overlay" onClick={e => e.target === e.currentTarget && !confirming && onClose()}>
@@ -37,7 +51,7 @@ export default function ConfirmDialog({ isOpen, onClose, onConfirm, title, messa
             onClick={handleConfirm}
             disabled={confirming}
           >
-            {confirming ? 'Eliminando...' : confirmLabel}
+            {confirming ? activeLoadingLabel : confirmLabel}
           </button>
         </div>
       </div>

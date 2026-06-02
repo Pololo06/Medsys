@@ -138,7 +138,7 @@ html.dark .schedule-slot {
 }
 
 html.dark .schedule-add-form {
-  background: var(--gray-800);
+  background: #1e293b;
 }
 
 .schedule-form-group {

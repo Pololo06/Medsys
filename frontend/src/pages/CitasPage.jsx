@@ -41,7 +41,9 @@ export default function CitasPage() {
   }
 
   useEffect(() => { fetchData(); }, []);
-  function closeModal(){ setIsModalOpen(false); setError(''); }
+
+  function closeNewModal() { setIsModalOpen(false); setError(''); }
+  function closeCancelModal() { setIsCancelModal(false); setCancelReason(''); setSelectedCita(null); }
 
   async function handleAction(type, cita, notes) {
     try {
@@ -57,7 +59,7 @@ export default function CitasPage() {
     try {
       await cancelAppointment(selectedCita.id, cancelReason);
       toast.success('Cita cancelada.');
-      setIsCancelModal(false);
+      closeCancelModal();
       await fetchData();
     } catch (e) { toast.error(e.message || 'Error al cancelar.'); }
   }
@@ -68,11 +70,13 @@ export default function CitasPage() {
     }
     setSaving(true); setError('');
     try {
-      const startTime = form.startTime.length === 16 ? form.startTime + ':00' : form.startTime;
+      let startTime = form.startTime;
+      if (startTime.length === 16) startTime = startTime + ':00';
       await createAppointment({ ...form, startTime });
       toast.success('Cita creada exitosamente.');
       await fetchData();
       setIsModalOpen(false);
+      setForm({ patientId: '', doctorId: '', officeId: '', appointmentTypeId: '', startTime: '' });
     } catch (e) {
       setError(e.message || 'Error al crear la cita.');
     } finally {
@@ -144,11 +148,12 @@ export default function CitasPage() {
       </div>
 
       {isModalOpen && (
-        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setIsModalOpen(false)}>
+        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && closeNewModal()}>
           <div className="modal">
             <div className="modal-header">
               <h3 className="modal-title">Nueva Cita</h3>
-              <button onClick={closeModal} className="modal-close-btn" aria-label="Cerrar"><X size={18} /></button>
+              {/* BUG FIX: Antes llamaba a closeModal() que no existía con ese nombre */}
+              <button onClick={closeNewModal} className="modal-close-btn" aria-label="Cerrar"><X size={18} /></button>
             </div>
             <div className="modal-body">
               {error && <div className="alert alert-error">{error}</div>}
@@ -186,7 +191,7 @@ export default function CitasPage() {
               </div>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-secondary" onClick={() => setIsModalOpen(false)}>Cancelar</button>
+              <button className="btn btn-secondary" onClick={closeNewModal}>Cancelar</button>
               <button className="btn btn-primary" onClick={handleCreate} disabled={saving}>
                 {saving ? 'Guardando...' : 'Crear Cita'}
               </button>
@@ -196,11 +201,12 @@ export default function CitasPage() {
       )}
 
       {isCancelModal && (
-        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setIsCancelModal(false)}>
+        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && closeCancelModal()}>
           <div className="modal modal-sm">
             <div className="modal-header">
               <h3 className="modal-title">Cancelar Cita</h3>
-              <button onClick={closeModal} className="modal-close-btn" aria-label="Cerrar"><X size={18} /></button>
+              {/* BUG FIX: Antes llamaba a closeModal() que cerraba el modal de Nueva Cita, no éste */}
+              <button onClick={closeCancelModal} className="modal-close-btn" aria-label="Cerrar"><X size={18} /></button>
             </div>
             <div className="modal-body">
               <p className="cancel-message">
@@ -212,7 +218,7 @@ export default function CitasPage() {
               </div>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-secondary" onClick={() => setIsCancelModal(false)}>Volver</button>
+              <button className="btn btn-secondary" onClick={closeCancelModal}>Volver</button>
               <button className="btn btn-danger" onClick={handleCancel}>Confirmar cancelación</button>
             </div>
           </div>

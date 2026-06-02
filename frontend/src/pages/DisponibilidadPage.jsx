@@ -5,6 +5,18 @@ import { getAvailabilitySlots } from '../services/AvailabilityService';
 import { getAllDoctors } from '../services/DoctorService';
 import { getAppointmentTypes } from '../services/AppointmentTypeService';
 
+
+function formatTimeSlot(timeStr) {
+  if (!timeStr) return '—';
+  if (/^\d{2}:\d{2}/.test(timeStr)) {
+    return timeStr.slice(0, 5); // Retorna "HH:mm"
+  }
+  // Si es ISO completo, parsear con Date
+  const d = new Date(timeStr);
+  if (isNaN(d.getTime())) return timeStr;
+  return d.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+}
+
 export default function DisponibilidadPage() {
   const [doctors, setDoctors]   = useState([]);
   const [types, setTypes]       = useState([]);
@@ -128,18 +140,12 @@ export default function DisponibilidadPage() {
               </p>
               <div className="availability-slots-grid">
                 {slots.map((slot, i) => {
-                  const start = slot.startTime ? new Date(slot.startTime) : null;
-                  const end   = slot.endTime   ? new Date(slot.endTime)   : null;
-                  const label = start
-                    ? start.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })
-                    : '—';
-                  const endLabel = end
-                    ? end.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })
-                    : '';
+                  const label    = formatTimeSlot(slot.startTime);
+                  const endLabel = formatTimeSlot(slot.endTime);
                   return (
                     <div key={i} className="availability-slot">
                       <p className="availability-slot-time">{label}</p>
-                      {endLabel && <p className="availability-slot-end">{endLabel}</p>}
+                      {endLabel && endLabel !== '—' && <p className="availability-slot-end">{endLabel}</p>}
                     </div>
                   );
                 })}

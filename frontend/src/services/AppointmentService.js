@@ -12,14 +12,14 @@ export async function getAppointments() {
   return api.get(APPOINTMENT_URL);
 }
 export async function confirmAppointment(id) {
-  return api.patch(`${APPOINTMENT_URL}/${id}/confirm`);
+  return api.put(`${APPOINTMENT_URL}/${id}/confirm`);
 }
 export async function cancelAppointment(id, reason) {
-  return api.patch(`${APPOINTMENT_URL}/${id}/cancel`, { reason });
+  return api.put(`${APPOINTMENT_URL}/${id}/cancel`, { reason });
 }
 export async function completeAppointment(id, notes) {
-  return api.patch(`${APPOINTMENT_URL}/${id}/complete`, { notes });
+  return api.put(`${APPOINTMENT_URL}/${id}/complete`, { notes });
 }
 export async function setAsNoShowAppointment(id) {
-  return api.patch(`${APPOINTMENT_URL}/${id}/no-show`);
+  return api.put(`${APPOINTMENT_URL}/${id}/no-show`);
 }

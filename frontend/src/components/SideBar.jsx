@@ -3,7 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Stethoscope, BookOpen,
   CalendarCheck, Building2, Clock, BarChart3,
-  Activity, LogOut, ChevronLeft
+  LogOut, ChevronLeft, HeartPulse
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -50,7 +50,7 @@ export default function Sidebar() {
     >
       <div className={`sidebar-header ${collapsed ? 'sidebar-header--collapsed' : ''}`}>
         <div className="sidebar-logo-icon">
-          <Activity size={17} color="white" strokeWidth={2.5} />
+          <HeartPulse size={17} color="white" strokeWidth={2.5} />
         </div>
         <div className="sidebar-logo-text">
           <p className="sidebar-brand">MedSys</p>

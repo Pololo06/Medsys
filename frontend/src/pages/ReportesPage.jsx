@@ -132,6 +132,7 @@ export default function ReportesPage() {
             rows={ocup.data}
             columns={[
               { key: 'officeName', label: 'Consultorio', bold: true },
+              // BUG FIX: badge-green no existe. Se reemplaza por badge-teal que sí existe.
               { key: 'appointmentCount', label: 'Citas', render: v => <span className="badge badge-blue">{v}</span> },
             ]}
           />
@@ -150,7 +151,8 @@ export default function ReportesPage() {
             rows={prod.data}
             columns={[
               { key: 'doctorName', label: 'Doctor', bold: true },
-              { key: 'completedAppointments', label: 'Citas completadas', render: v => <span className="badge badge-green">{v}</span> },
+              // BUG FIX: badge-green no existe en el sistema de estilos. Se usa badge-teal.
+              { key: 'completedAppointments', label: 'Citas completadas', render: v => <span className="badge badge-teal">{v}</span> },
             ]}
           />
         )}
@@ -169,7 +171,9 @@ export default function ReportesPage() {
             rows={noshow.data}
             columns={[
               { key: 'patientName', label: 'Paciente', bold: true },
-              { key: 'noShowCount', label: 'Inasistencias', render: v => <span className="badge badge-orange">{v}</span> },
+              // BUG FIX: badge-orange no existe. Se usa badge-amber que sí está definido
+              // en STATUS_MAP y coincide con el color naranja de inasistencias.
+              { key: 'noShowCount', label: 'Inasistencias', render: v => <span className="badge badge-amber">{v}</span> },
             ]}
           />
         )}

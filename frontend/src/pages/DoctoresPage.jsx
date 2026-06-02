@@ -117,7 +117,9 @@ function ScheduleModal({ doctor, onClose }) {
       await loadSchedule();
       setShowAdd(false);
     } catch (e) {
-      toast.error(e?.response?.data?.message || 'Error al guardar el horario.');
+      // BUG FIX: Se usaba e?.response?.data?.message (formato Axios) pero el proyecto
+      // usa fetch nativo vía api.js, donde los errores son instancias de Error con .message.
+      toast.error(e?.message || 'Error al guardar el horario.');
     } finally {
       setSaving(false);
     }
