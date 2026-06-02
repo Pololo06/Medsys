@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { Users, Stethoscope, CalendarCheck, Building2, TrendingUp, Clock, CheckCircle } from 'lucide-react';
-import { getAllPatients } from '../services/PatientService';
+import { getAllPatients, getPatientById } from '../services/PatientService';
 import { getAllDoctors } from '../services/DoctorService';
 import { getAppointments } from '../services/AppointmentService';
 import { getOffices } from '../services/OfficeService';
@@ -8,6 +9,7 @@ import { useAuth } from '../context/AuthContext';
 import { STATUS_MAP } from '../constants';
 import CardSkeleton from '../components/Skeleton/CardSkeleton';
 import TableSkeleton from '../components/Skeleton/TableSkeleton';
+import PatientDetailModal from '../components/PatientDetailModal';
 import '../styles/Dashboard.css';
 
 function StatCard({ icon: Icon, label, value, color, bg }) {
@@ -43,6 +45,7 @@ export default function Dashboard() {
   const [stats, setStats] = useState({ patients: 0, doctors: 0, appointments: 0, offices: 0 });
   const [loading, setLoading] = useState(true);
   const [recentAppts, setRecentAppts] = useState([]);
+  const [detailPatient, setDetailPatient] = useState(null);
   const { user } = useAuth();
 
   const now = new Date();
@@ -50,8 +53,10 @@ export default function Dashboard() {
   const hora = now.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
 
   useEffect(() => {
+    let cancelled = false;
     async function load() {
       const [pR, dR, aR, oR] = await Promise.allSettled([getAllPatients(), getAllDoctors(), getAppointments(), getOffices()]);
+      if (cancelled) return;
       const patients = pR.status === 'fulfilled' ? (pR.value || []) : [];
       const doctors  = dR.status === 'fulfilled' ? (dR.value || []) : [];
       const appts    = aR.status === 'fulfilled' ? (aR.value || []) : [];
@@ -61,7 +66,17 @@ export default function Dashboard() {
       setLoading(false);
     }
     load();
+    return () => { cancelled = true; };
   }, []);
+
+  async function handlePatientClick(patientId) {
+    try {
+      const patient = await getPatientById(patientId);
+      setDetailPatient(patient);
+    } catch {
+      toast.error('No se pudo cargar la información del paciente.');
+    }
+  }
 
   const todayAppts = recentAppts.filter(a => {
     if (!a.startTime) return false;
@@ -154,7 +169,11 @@ export default function Dashboard() {
                 const st = STATUS_MAP[a.status] || { badge: 'badge-gray', label: a.status };
                 return (
                   <tr key={a.id || i}>
-                    <td className="td-primary">{a.patientName || '—'}</td>
+                    <td className="td-primary">
+                      <button className="link-btn" onClick={() => handlePatientClick(a.patientId)}>
+                        {a.patientName || '—'}
+                      </button>
+                    </td>
                     <td className="td-secondary">{a.doctorName || '—'}</td>
                     <td className="td-muted">{a.appointmentTypeName || '—'}</td>
                     <td className="td-mono td-muted">
@@ -170,6 +189,9 @@ export default function Dashboard() {
           </table>
         </div>
       </div>
+      {detailPatient && (
+        <PatientDetailModal patient={detailPatient} onClose={() => setDetailPatient(null)} />
+      )}
     </div>
   );
 }

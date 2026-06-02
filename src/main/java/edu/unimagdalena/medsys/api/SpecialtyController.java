@@ -41,10 +41,16 @@ public class SpecialtyController {
         return ResponseEntity.ok(service.findAll());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping({"/{id}"})
     public ResponseEntity<SpecialtyResponse> get(
             @PathVariable UUID id) {
 
         return ResponseEntity.ok(service.findById(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

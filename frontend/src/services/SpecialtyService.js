@@ -9,3 +9,7 @@ export async function getSpecialties() {
 export async function createSpecialty(name) {
   return api.post(SPECIALTY_URL, { name });
 }
+
+export async function deleteSpecialty(id) {
+  return api.delete(`${SPECIALTY_URL}/${id}`);
+}

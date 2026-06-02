@@ -23,7 +23,7 @@ export const TOAST_CONFIG = {
 
 export const API_CONFIG = {
   BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:8080/api',
-  TIMEOUT: 10000
+  TIMEOUT: 30000
 };
 
 export const PAGINATION = {

@@ -172,3 +172,152 @@ html.dark .schedule-add-form {
   padding: 12px 20px;
   border-top: 1px solid var(--border);
 }
+
+/* ── Doctor Detail Modal ───────────────────────────── */
+.doctor-detail-modal {
+  max-width: 420px;
+}
+
+.doctor-detail-avatar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.doctor-detail-avatar-circle {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: var(--brand-100);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+html.dark .doctor-detail-avatar-circle {
+  background: rgba(29, 127, 233, 0.18);
+}
+
+.doctor-detail-name {
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.doctor-detail-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.doctor-detail-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--gray-50);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+html.dark .doctor-detail-row {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: #334155;
+}
+
+html.dark .doctor-detail-name {
+  color: #f1f5f9;
+}
+
+html.dark .doctor-detail-label {
+  color: #94a3b8;
+}
+
+html.dark .doctor-detail-value {
+  color: #e2e8f0;
+}
+
+html.dark .doctor-detail-mono {
+  color: #94a3b8;
+}
+
+.doctor-detail-icon {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.doctor-detail-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  width: 90px;
+  flex-shrink: 0;
+}
+
+.doctor-detail-value {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.doctor-detail-mono {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ── Clickable doctor rows ─────────────────────────── */
+.doctor-row-clickable {
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.doctor-row-clickable:hover {
+  background: var(--gray-50);
+}
+
+html.dark .doctor-row-clickable:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ── Catalog card delete button ────────────────────── */
+.catalog-card--deletable {
+  position: relative;
+}
+
+.catalog-card-delete-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transition: opacity var(--transition), background var(--transition), color var(--transition);
+}
+
+.catalog-card--deletable:hover .catalog-card-delete-btn {
+  opacity: 1;
+}
+
+.catalog-card-delete-btn:hover {
+  background: #fee2e2;
+  color: var(--danger);
+}
+
+html.dark .catalog-card-delete-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}

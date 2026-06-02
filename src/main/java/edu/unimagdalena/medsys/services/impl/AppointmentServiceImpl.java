@@ -107,7 +107,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional(readOnly = true)
     public AppointmentResponse findById(UUID id) {
-        return appointmentRepository.findById(id)
+        return appointmentRepository.findByIdWithJoins(id)
                 .map(AppointmentMapper::toResponse)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
     }
@@ -115,14 +115,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional(readOnly = true)
     public List<AppointmentResponse> findAll() {
-        return appointmentRepository.findAll().stream()
+        return appointmentRepository.findAllWithJoins().stream()
                 .map(AppointmentMapper::toResponse)
                 .toList();
     }
 
     @Override
     public AppointmentResponse confirm(UUID id) {
-        var appointment = appointmentRepository.findById(id)
+        var appointment = appointmentRepository.findByIdWithJoins(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
         if (appointment.getStatus() != AppointmentStatus.SCHEDULED) {
             throw new BusinessException("Only SCHEDULED appointments can be confirmed. Current status: " + appointment.getStatus());
@@ -137,7 +137,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (req.reason() == null || req.reason().isBlank()) {
             throw new BusinessException("Cancellation reason is required");
         }
-        var appointment = appointmentRepository.findById(id)
+        var appointment = appointmentRepository.findByIdWithJoins(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
         if (appointment.getStatus() != AppointmentStatus.SCHEDULED
                 && appointment.getStatus() != AppointmentStatus.CONFIRMED) {
@@ -151,7 +151,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentResponse complete(UUID id, CompleteAppointmentRequest req) {
-        var appointment = appointmentRepository.findById(id)
+        var appointment = appointmentRepository.findByIdWithJoins(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
         if (appointment.getStatus() != AppointmentStatus.CONFIRMED) {
             throw new BusinessException("Only CONFIRMED appointments can be completed. Current status: " + appointment.getStatus());
@@ -167,7 +167,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentResponse markNoShow(UUID id) {
-        var appointment = appointmentRepository.findById(id)
+        var appointment = appointmentRepository.findByIdWithJoins(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
         if (appointment.getStatus() != AppointmentStatus.CONFIRMED) {
             throw new BusinessException("Only CONFIRMED appointments can be marked as NO_SHOW. Current status: " + appointment.getStatus());

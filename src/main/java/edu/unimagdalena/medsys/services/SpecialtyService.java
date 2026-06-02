@@ -10,4 +10,5 @@ public interface SpecialtyService {
     SpecialtyResponse create(CreateSpecialtyRequest req);
     List<SpecialtyResponse> findAll();
     SpecialtyResponse findById(UUID id);
+    void delete(UUID id);
 }

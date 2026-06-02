@@ -26,6 +26,8 @@ export default function CitasPage() {
   const [error, setError]           = useState('');
   const [saving, setSaving]         = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
+  const [notesModal, setNotesModal] = useState(null);
+  const [notesText, setNotesText]   = useState('');
 
   async function fetchData() {
     setLoading(true);
@@ -41,10 +43,10 @@ export default function CitasPage() {
   useEffect(() => { fetchData(); }, []);
   function closeModal(){ setIsModalOpen(false); setError(''); }
 
-  async function handleAction(type, cita) {
+  async function handleAction(type, cita, notes) {
     try {
       if (type === 'confirm') { await confirmAppointment(cita.id); toast.success('Cita confirmada.'); }
-      else if (type === 'complete') { await completeAppointment(cita.id, ''); toast.success('Cita completada.'); }
+      else if (type === 'complete') { await completeAppointment(cita.id, notes ?? ''); toast.success('Cita completada.'); }
       else if (type === 'noshow') { await setAsNoShowAppointment(cita.id); toast.success('Marcada como no asistió.'); }
       await fetchData();
     } catch (e) { toast.error(e.message || 'Error al actualizar la cita.'); }
@@ -128,7 +130,7 @@ export default function CitasPage() {
                         <button className="btn btn-sm btn-danger" onClick={() => { setSelectedCita(c); setCancelReason(''); setIsCancelModal(true); }}>Cancelar</button>
                       </>}
                       {c.status === 'CONFIRMED' && <>
-                        <button className="btn btn-sm btn-action btn-action-complete" onClick={() => setConfirmAction({ type: 'complete', cita: c })}>Completar</button>
+                        <button className="btn btn-sm btn-action btn-action-complete" onClick={() => { setNotesModal(c); setNotesText(''); }}>Completar</button>
                         <button className="btn btn-sm btn-action btn-action-noshow" onClick={() => setConfirmAction({ type: 'noshow', cita: c })}>No asistió</button>
                         <button className="btn btn-sm btn-danger" onClick={() => { setSelectedCita(c); setCancelReason(''); setIsCancelModal(true); }}>Cancelar</button>
                       </>}
@@ -217,13 +219,41 @@ export default function CitasPage() {
         </div>
       )}
 
+      {notesModal && (
+        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setNotesModal(null)}>
+          <div className="modal modal-sm">
+            <div className="modal-header">
+              <h3 className="modal-title">Completar cita</h3>
+              <button onClick={() => setNotesModal(null)} className="modal-close-btn" aria-label="Cerrar"><X size={18} /></button>
+            </div>
+            <div className="modal-body">
+              <p className="cancel-message">
+                Completando cita de <strong>{notesModal?.patientName}</strong>
+              </p>
+              <div className="form-group">
+                <label className="input-label" htmlFor="complete-notes">Notas clínicas (opcional)</label>
+                <textarea id="complete-notes" value={notesText} onChange={e => setNotesText(e.target.value)}
+                  className="input" rows={3} placeholder="Diagnóstico, observaciones, recomendaciones..." />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-secondary btn-sm" onClick={() => setNotesModal(null)}>Cancelar</button>
+              <button className="btn btn-primary btn-sm" onClick={() => {
+                handleAction('complete', notesModal, notesText);
+                setNotesModal(null);
+              }}>Completar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <ConfirmDialog
         isOpen={!!confirmAction}
         onClose={() => setConfirmAction(null)}
-        onConfirm={() => handleAction(confirmAction?.type, confirmAction?.cita)}
-        title={confirmAction?.type === 'confirm' ? 'Confirmar cita' : confirmAction?.type === 'complete' ? 'Completar cita' : 'Marcar como no asistió'}
-        message={`¿Deseas ${confirmAction?.type === 'confirm' ? 'confirmar' : confirmAction?.type === 'complete' ? 'completar' : 'marcar como no asistió'} la cita de ${confirmAction?.cita?.patientName}?`}
-        confirmLabel={confirmAction?.type === 'confirm' ? 'Confirmar' : confirmAction?.type === 'complete' ? 'Completar' : 'No asistió'}
+        onConfirm={async () => { await handleAction(confirmAction?.type, confirmAction?.cita); setConfirmAction(null); }}
+        title={confirmAction?.type === 'confirm' ? 'Confirmar cita' : 'Marcar como no asistió'}
+        message={`¿Deseas ${confirmAction?.type === 'confirm' ? 'confirmar' : 'marcar como no asistió'} la cita de ${confirmAction?.cita?.patientName}?`}
+        confirmLabel={confirmAction?.type === 'confirm' ? 'Confirmar' : 'No asistió'}
         variant="warning"
       />
     </div>

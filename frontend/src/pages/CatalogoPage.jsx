@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Plus, FlaskConical, ClipboardList, Clock, X } from 'lucide-react';
+import { Plus, FlaskConical, ClipboardList, Clock, X, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { getSpecialties, createSpecialty } from '../services/SpecialtyService';
-import { getAppointmentTypes, createAppointmentType } from '../services/AppointmentTypeService';
+import { getSpecialties, createSpecialty, deleteSpecialty } from '../services/SpecialtyService';
+import { getAppointmentTypes, createAppointmentType, deleteAppointmentType } from '../services/AppointmentTypeService';
+import ConfirmDialog from '../components/ConfirmDialog';
+
 export default function CatalogoPage() {
   const [tab, setTab]           = useState('especialidades');
   const [specialties, setSpecialties] = useState([]);
@@ -12,6 +14,7 @@ export default function CatalogoPage() {
   const [form, setForm]         = useState({ name: '', durationMinutes: 30 });
   const [error, setError]       = useState('');
   const [saving, setSaving]     = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   async function fetchData() {
     setLoading(true);
@@ -43,6 +46,35 @@ export default function CatalogoPage() {
       setError(e.message || 'Error al guardar.');
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (!deleteTarget) return;
+    try {
+      if (deleteTarget.kind === 'especialidad') {
+        await deleteSpecialty(deleteTarget.id);
+        toast.success('Especialidad eliminada.');
+      } else {
+        await deleteAppointmentType(deleteTarget.id);
+        toast.success('Tipo de cita eliminado.');
+      }
+      await fetchData();
+    } catch (e) {
+      const isConstraint = e.message?.toLowerCase().includes('constraint') ||
+        e.message?.toLowerCase().includes('foreign') ||
+        e.message?.toLowerCase().includes('referenc') ||
+        e.message?.includes('500') ||
+        e.message === 'Error del servidor. Intente más tarde.';
+      const label = deleteTarget.kind === 'especialidad' ? 'la especialidad' : 'el tipo de cita';
+      toast.error(
+        isConstraint
+          ? `No se puede eliminar ${label} porque está siendo usado por doctores o citas activas.`
+          : (e.message || `Error al eliminar ${label}.`),
+        { duration: 5000 }
+      );
+    } finally {
+      setDeleteTarget(null);
     }
   }
 
@@ -107,7 +139,14 @@ export default function CatalogoPage() {
       ) : (
         <div className="catalog-grid">
           {items.map(item => (
-            <div key={item.id} className="card catalog-card">
+            <div key={item.id} className="card catalog-card catalog-card--deletable">
+              <button
+                className="catalog-card-delete-btn"
+                aria-label="Eliminar"
+                onClick={() => setDeleteTarget({ id: item.id, name: item.name, kind: isEsp ? 'especialidad' : 'tipo' })}
+              >
+                <Trash2 size={13} />
+              </button>
               <div className={`catalog-card-icon catalog-card-icon--${isEsp ? 'specialty' : 'type'}`}>
                 {isEsp
                   ? <FlaskConical size={18} />
@@ -169,6 +208,16 @@ export default function CatalogoPage() {
           </div>
         </div>
       )}
+
+      <ConfirmDialog
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
+        title={`Eliminar ${deleteTarget?.kind === 'especialidad' ? 'especialidad' : 'tipo de cita'}`}
+        message={`¿Estás seguro de eliminar "${deleteTarget?.name}"? Esta acción no se puede deshacer.`}
+        confirmLabel="Eliminar"
+        variant="danger"
+      />
     </div>
   );
 }

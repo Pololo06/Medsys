@@ -25,6 +25,12 @@ export const validatePhone = (value) => {
   return null;
 };
 
+export const validateDocumentId = (value) => {
+  if (!value || !value.trim()) return 'El documento es obligatorio.';
+  if (value.trim().length < 5) return 'El documento debe tener al menos 5 caracteres.';
+  return null;
+};
+
 export const validateForm = (fields) => {
   const errors = {};
   Object.entries(fields).forEach(([fieldName, value]) => {

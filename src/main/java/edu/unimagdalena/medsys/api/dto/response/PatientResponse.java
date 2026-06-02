@@ -9,5 +9,6 @@ public record PatientResponse(
         String fullName,
         String email,
         String phone,
+        String documentId,
         PatientStatus status
 ) {}

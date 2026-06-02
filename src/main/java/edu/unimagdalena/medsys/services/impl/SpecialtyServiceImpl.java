@@ -2,11 +2,13 @@ package edu.unimagdalena.medsys.services.impl;
 
 import edu.unimagdalena.medsys.api.dto.request.CreateSpecialtyRequest;
 import edu.unimagdalena.medsys.api.dto.response.SpecialtyResponse;
+import edu.unimagdalena.medsys.exceptions.ConflictException;
 import edu.unimagdalena.medsys.exceptions.ResourceNotFoundException;
 import edu.unimagdalena.medsys.services.mappers.SpecialtyMapper;
 import edu.unimagdalena.medsys.domain.repositories.SpecialtyRepository;
 import edu.unimagdalena.medsys.services.SpecialtyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,5 +45,18 @@ public class SpecialtyServiceImpl implements SpecialtyService {
         return specialtyRepository.findById(id)
                 .map(SpecialtyMapper::toResponse)
                 .orElseThrow(() -> new ResourceNotFoundException("Specialty not found with id: " + id));
+    }
+
+    @Override
+    public void delete(UUID id) {
+        if (!specialtyRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Specialty not found with id: " + id);
+        }
+        try {
+            specialtyRepository.deleteById(id);
+            specialtyRepository.flush();
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("No se puede eliminar la especialidad porque está asignada a uno o más doctores.");
+        }
     }
 }

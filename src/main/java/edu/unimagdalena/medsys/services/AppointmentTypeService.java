@@ -10,4 +10,5 @@ public interface AppointmentTypeService {
     AppointmentTypeResponse create(CreateAppointmentTypeRequest req);
     List<AppointmentTypeResponse> findAll();
     AppointmentTypeResponse findById(UUID id);
+    void delete(UUID id);
 }

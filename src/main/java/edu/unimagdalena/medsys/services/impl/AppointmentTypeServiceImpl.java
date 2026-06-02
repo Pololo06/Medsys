@@ -2,11 +2,13 @@ package edu.unimagdalena.medsys.services.impl;
 
 import edu.unimagdalena.medsys.api.dto.request.CreateAppointmentTypeRequest;
 import edu.unimagdalena.medsys.api.dto.response.AppointmentTypeResponse;
+import edu.unimagdalena.medsys.exceptions.ConflictException;
 import edu.unimagdalena.medsys.exceptions.ResourceNotFoundException;
 import edu.unimagdalena.medsys.services.mappers.AppointmentTypeMapper;
 import edu.unimagdalena.medsys.domain.repositories.AppointmentTypeRepository;
 import edu.unimagdalena.medsys.services.AppointmentTypeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,5 +45,18 @@ public class AppointmentTypeServiceImpl implements AppointmentTypeService {
         return appointmentTypeRepository.findById(id)
                 .map(AppointmentTypeMapper::toResponse)
                 .orElseThrow(() -> new ResourceNotFoundException("AppointmentType not found with id: " + id));
+    }
+
+    @Override
+    public void delete(UUID id) {
+        if (!appointmentTypeRepository.existsById(id)) {
+            throw new ResourceNotFoundException("AppointmentType not found with id: " + id);
+        }
+        try {
+            appointmentTypeRepository.deleteById(id);
+            appointmentTypeRepository.flush();
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("No se puede eliminar el tipo de cita porque está asociado a una o más citas.");
+        }
     }
 }

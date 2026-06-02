@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Plus, Pencil, Stethoscope, X, CalendarDays } from 'lucide-react';
+import { Search, Plus, Pencil, Stethoscope, X, CalendarDays, User, Phone, Mail, BadgeCheck, Clock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { getAllDoctors, createDoctor, updateDoctor } from '../services/DoctorService';
 import { getSpecialties } from '../services/SpecialtyService';
@@ -12,6 +12,72 @@ import '../styles/DoctoresPage.css';
 
 const EMPTY_FORM = { fullName: '', specialtyId: '', active: true };
 
+/* ── Doctor Detail Modal ───────────────────────────────────────── */
+function DoctorDetailModal({ doctor, onClose, onEdit, onSchedule }) {
+  return (
+    <div className="schedule-modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="schedule-modal doctor-detail-modal">
+        <div className="schedule-modal-header">
+          <h3 className="schedule-modal-title">Detalle del Doctor</h3>
+          <button onClick={onClose} className="schedule-modal-close" aria-label="Cerrar"><X size={18} /></button>
+        </div>
+        <div className="schedule-modal-body">
+          <div className="doctor-detail-avatar">
+            <div className="doctor-detail-avatar-circle">
+              {doctor.fullName?.charAt(0)?.toUpperCase() || 'D'}
+            </div>
+          </div>
+
+          <div className="doctor-detail-name">{doctor.fullName}</div>
+
+          <div className="doctor-detail-rows">
+            <div className="doctor-detail-row">
+              <Stethoscope size={15} className="doctor-detail-icon" />
+              <span className="doctor-detail-label">Especialidad</span>
+              <span className="doctor-detail-value">{doctor.specialtyName || '—'}</span>
+            </div>
+            <div className="doctor-detail-row">
+              <BadgeCheck size={15} className="doctor-detail-icon" />
+              <span className="doctor-detail-label">Estado</span>
+              <span className={`badge ${doctor.active !== false ? 'badge-teal' : 'badge-gray'}`}>
+                {doctor.active !== false ? 'Activo' : 'Inactivo'}
+              </span>
+            </div>
+            {doctor.email && (
+              <div className="doctor-detail-row">
+                <Mail size={15} className="doctor-detail-icon" />
+                <span className="doctor-detail-label">Correo</span>
+                <span className="doctor-detail-value">{doctor.email}</span>
+              </div>
+            )}
+            {doctor.phone && (
+              <div className="doctor-detail-row">
+                <Phone size={15} className="doctor-detail-icon" />
+                <span className="doctor-detail-label">Teléfono</span>
+                <span className="doctor-detail-value">{doctor.phone}</span>
+              </div>
+            )}
+            <div className="doctor-detail-row">
+              <User size={15} className="doctor-detail-icon" />
+              <span className="doctor-detail-label">ID</span>
+              <span className="doctor-detail-value doctor-detail-mono">{doctor.id}</span>
+            </div>
+          </div>
+        </div>
+        <div className="schedule-modal-footer">
+          <button className="btn btn-secondary btn-sm" onClick={() => { onClose(); onSchedule(doctor); }}>
+            <CalendarDays size={14} /> Ver horario
+          </button>
+          <button className="btn btn-primary btn-sm" onClick={() => { onClose(); onEdit(doctor); }}>
+            <Pencil size={14} /> Editar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Schedule Modal ────────────────────────────────────────────── */
 function ScheduleModal({ doctor, onClose }) {
   const [slots, setSlots] = useState({});
   const [loading, setLoading] = useState(true);
@@ -144,6 +210,7 @@ function ScheduleModal({ doctor, onClose }) {
   );
 }
 
+/* ── Main Page ─────────────────────────────────────────────────── */
 export default function DoctoresPage() {
   const [doctores, setDoctores] = useState([]);
   const [especialidades, setEspecialidades] = useState([]);
@@ -155,6 +222,7 @@ export default function DoctoresPage() {
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
   const [scheduleDoctor, setScheduleDoctor] = useState(null);
+  const [detailDoctor, setDetailDoctor] = useState(null);
 
   const debouncedSearch = useDebounce(search, DEBOUNCE_MS.SEARCH);
 
@@ -237,11 +305,11 @@ export default function DoctoresPage() {
               </td></tr>
             ) : (
               filtered.map(d => (
-                <tr key={d.id}>
+                <tr key={d.id} className="doctor-row-clickable" onClick={() => setDetailDoctor(d)}>
                   <td className="td-primary">{d.fullName}</td>
                   <td>{d.specialtyName || '—'}</td>
                   <td><span className={`badge ${d.active !== false ? 'badge-teal' : 'badge-gray'}`}>{d.active !== false ? 'Activo' : 'Inactivo'}</span></td>
-                  <td>
+                  <td onClick={e => e.stopPropagation()}>
                     <div className="table-actions">
                       <button className="btn btn-ghost btn-sm btn-ghost-blue" onClick={() => setScheduleDoctor(d)}>
                         <CalendarDays size={13} /> Horario
@@ -257,6 +325,15 @@ export default function DoctoresPage() {
           </tbody>
         </table>
       </div>
+
+      {detailDoctor && (
+        <DoctorDetailModal
+          doctor={detailDoctor}
+          onClose={() => setDetailDoctor(null)}
+          onEdit={openEdit}
+          onSchedule={setScheduleDoctor}
+        />
+      )}
 
       {scheduleDoctor && <ScheduleModal doctor={scheduleDoctor} onClose={() => setScheduleDoctor(null)} />}
 

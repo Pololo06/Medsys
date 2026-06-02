@@ -24,6 +24,8 @@ public class Patient {
     private String email;
     @Column(nullable = false)
     private String phone;
+    @Column(name = "document_id", nullable = false)
+    private String documentId;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PatientStatus status;

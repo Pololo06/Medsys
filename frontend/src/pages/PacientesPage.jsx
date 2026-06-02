@@ -1,66 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Search, Plus, Pencil, Users, X, Mail, Phone } from 'lucide-react';
+import { Search, Plus, Pencil, Users, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { getAllPatients, createPatient, updatePatient } from '../services/PatientService';
 import { PATIENT_STATUS_MAP } from '../constants';
 import { useDebounce } from '../utils/debounce';
-import { validateFullName, validateEmail, validatePhone } from '../utils/validation';
+import { validateFullName, validateEmail, validatePhone, validateDocumentId } from '../utils/validation';
 import TableSkeleton from '../components/Skeleton/TableSkeleton';
+import PatientDetailModal from '../components/PatientDetailModal';
 
-const EMPTY_FORM = { fullName: '', email: '', phone: '' };
-
-function PatientDetailModal({ patient, onClose, onEdit }) {
-  if (!patient) return null;
-  const st = PATIENT_STATUS_MAP[patient.status] || PATIENT_STATUS_MAP.ACTIVE;
-  const initials = patient.fullName
-    ? patient.fullName.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase()
-    : '?';
-
-  return (
-    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="modal modal-detail">
-        <div className="modal-header">
-          <h3 className="modal-title">Detalle del paciente</h3>
-          <button onClick={onClose} className="modal-close-btn" aria-label="Cerrar">
-            <X size={18} />
-          </button>
-        </div>
-        <div className="modal-body">
-          <div className="detail-avatar-row">
-            <div className="detail-avatar">{initials}</div>
-            <div className="detail-name-section">
-              <p className="detail-name">{patient.fullName}</p>
-              <span className={`badge ${st.badge}`}>{st.label}</span>
-            </div>
-          </div>
-          <div className="divider" />
-          <div className="detail-fields">
-            <DetailRow icon={<Mail size={15} />} label="CORREO" value={patient.email || '—'} />
-            <DetailRow icon={<Phone size={15} />} label="TELÉFONO" value={patient.phone || '—'} mono />
-          </div>
-        </div>
-        <div className="modal-footer">
-          <button className="btn btn-secondary btn-sm" onClick={onClose}>Cerrar</button>
-          <button className="btn btn-primary btn-sm" onClick={() => { onClose(); onEdit(patient); }}>
-            <Pencil size={13} /> Editar
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function DetailRow({ icon, label, value, mono }) {
-  return (
-    <div className="detail-row">
-      <span className="detail-row-icon">{icon}</span>
-      <div>
-        <p className="detail-row-label">{label}</p>
-        <p className={`detail-row-value ${mono ? 'detail-row-value--mono' : ''}`}>{value}</p>
-      </div>
-    </div>
-  );
-}
+const EMPTY_FORM = { fullName: '', email: '', phone: '', documentId: '' };
 
 export default function PacientesPage() {
   const [pacientes, setPacientes]       = useState([]);
@@ -75,16 +23,25 @@ export default function PacientesPage() {
 
   const debouncedSearch = useDebounce(search, 300);
 
-  async function fetchPacientes() {
-    setLoading(true);
-    try { setPacientes(await getAllPatients() || []); }
-    catch { toast.error('No se pudieron cargar los pacientes.'); }
-    finally { setLoading(false); }
-  }
-  useEffect(() => { fetchPacientes(); }, []);
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      setLoading(true);
+      try {
+        const data = await getAllPatients();
+        if (!cancelled) setPacientes(data || []);
+      } catch {
+        if (!cancelled) toast.error('No se pudieron cargar los pacientes.');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    load();
+    return () => { cancelled = true; };
+  }, []);
 
   function openNew()   { setEditTarget(null); setForm(EMPTY_FORM); setErrors({}); setIsModalOpen(true); }
-  function openEdit(p) { setEditTarget(p); setForm({ fullName: p.fullName||'', email: p.email||'', phone: p.phone||'' }); setErrors({}); setIsModalOpen(true); }
+  function openEdit(p) { setEditTarget(p); setForm({ fullName: p.fullName||'', email: p.email||'', phone: p.phone||'', documentId: p.documentId||'' }); setErrors({}); setIsModalOpen(true); }
   function closeModal(){ setIsModalOpen(false); setErrors({}); }
 
   async function handleSave() {
@@ -92,24 +49,29 @@ export default function PacientesPage() {
     const nameErr = validateFullName(form.fullName);
     const emailErr = validateEmail(form.email);
     const phoneErr = validatePhone(form.phone);
+    const docErr = validateDocumentId(form.documentId);
     if (nameErr) errs.fullName = nameErr;
     if (emailErr) errs.email = emailErr;
     if (phoneErr) errs.phone = phoneErr;
+    if (docErr) errs.documentId = docErr;
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
 
     setSaving(true);
     try {
-      if (editTarget) { await updatePatient(editTarget.id, form.fullName, form.email, form.phone, editTarget.status); toast.success('Paciente actualizado.'); }
-      else { await createPatient(form.fullName, form.email, form.phone); toast.success('Paciente creado.'); }
-      await fetchPacientes(); closeModal();
+      if (editTarget) { await updatePatient(editTarget.id, form.fullName, form.email, form.phone, form.documentId, editTarget.status); toast.success('Paciente actualizado.'); }
+      else { await createPatient(form.fullName, form.email, form.phone, form.documentId); toast.success('Paciente creado.'); }
+      const updated = await getAllPatients();
+      setPacientes(updated || []);
+      closeModal();
     } catch (e) { toast.error(e.message || 'Error al guardar.'); }
     finally { setSaving(false); }
   }
 
   const filtered = pacientes.filter(p =>
     p.fullName?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-    p.email?.toLowerCase().includes(debouncedSearch.toLowerCase())
+    p.email?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+    (p.documentId || '').includes(debouncedSearch)
   );
 
   return (
@@ -134,11 +96,11 @@ export default function PacientesPage() {
       <div className="table-container">
         <table className="medsys-table">
           <thead>
-            <tr>{['Nombre completo', 'Correo electrónico', 'Teléfono', 'Estado', 'Acciones'].map(h => <th key={h}>{h}</th>)}</tr>
+            <tr>{['Nombre completo', 'Documento', 'Correo electrónico', 'Teléfono', 'Estado', 'Acciones'].map(h => <th key={h}>{h}</th>)}</tr>
           </thead>
           <tbody>
             {loading ? <TableSkeleton rows={5} columns={5} /> : filtered.length === 0 ? (
-              <tr><td colSpan={5}>
+              <tr><td colSpan={6}>
                 <div className="empty-state">
                   <div className="empty-state-icon"><Users size={22} /></div>
                   <p className="empty-state-text">{search ? 'Sin resultados para esa búsqueda.' : 'No hay pacientes registrados.'}</p>
@@ -150,6 +112,7 @@ export default function PacientesPage() {
               return (
                 <tr key={p.id} className="table-row-clickable" onClick={() => setDetailPatient(p)}>
                   <td className="td-primary">{p.fullName}</td>
+                  <td className="td-mono">{p.documentId || '—'}</td>
                   <td>{p.email}</td>
                   <td className="td-mono">{p.phone || '—'}</td>
                   <td><span className={`badge ${st.badge}`}>{st.label}</span></td>
@@ -185,6 +148,12 @@ export default function PacientesPage() {
                 <input id="patient-name" value={form.fullName} onChange={e => setForm({...form, fullName: e.target.value})}
                   className={`input ${errors.fullName ? 'input-error' : ''}`} placeholder="Ej. María García López" />
                 {errors.fullName && <span className="field-error">{errors.fullName}</span>}
+              </div>
+              <div className="form-group">
+                <label className="input-label" htmlFor="patient-doc">Cédula / Documento *</label>
+                <input id="patient-doc" value={form.documentId} onChange={e => setForm({...form, documentId: e.target.value})}
+                  className={`input ${errors.documentId ? 'input-error' : ''}`} placeholder="Ej. 1234567890" />
+                {errors.documentId && <span className="field-error">{errors.documentId}</span>}
               </div>
               <div className="form-group">
                 <label className="input-label" htmlFor="patient-email">Correo electrónico *</label>

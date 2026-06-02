@@ -14,6 +14,7 @@ public class PatientMapper {
                 .fullName(request.fullName())
                 .email(request.email())
                 .phone(request.phone())
+                .documentId(request.documentId())
                 .build();
     }
 
@@ -22,6 +23,7 @@ public class PatientMapper {
                 .fullName(request.fullName())
                 .email(request.email())
                 .phone(request.phone())
+                .documentId(request.documentId())
                 .status(request.status())
                 .build();
     }
@@ -32,6 +34,7 @@ public class PatientMapper {
                 patient.getFullName(),
                 patient.getEmail(),
                 patient.getPhone(),
+                patient.getDocumentId(),
                 patient.getStatus()
         );
     }

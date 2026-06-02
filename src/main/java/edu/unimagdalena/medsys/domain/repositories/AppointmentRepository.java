@@ -11,6 +11,25 @@ import java.util.UUID;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, UUID> {
 
+    @Query("""
+    SELECT a FROM Appointment a
+    LEFT JOIN FETCH a.patient
+    LEFT JOIN FETCH a.doctor
+    LEFT JOIN FETCH a.office
+    LEFT JOIN FETCH a.appointmentType
+    """)
+    List<Appointment> findAllWithJoins();
+
+    @Query("""
+    SELECT a FROM Appointment a
+    LEFT JOIN FETCH a.patient
+    LEFT JOIN FETCH a.doctor
+    LEFT JOIN FETCH a.office
+    LEFT JOIN FETCH a.appointmentType
+    WHERE a.id = :id
+    """)
+    java.util.Optional<Appointment> findByIdWithJoins(java.util.UUID id);
+
     List<Appointment> findByPatientIdAndStatus(UUID patientId, AppointmentStatus status);
 
     List<Appointment> findByStartTimeBetween(LocalDateTime startTime, LocalDateTime endTime);

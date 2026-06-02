@@ -42,8 +42,8 @@ class PatientControllerTest {
     void create_shouldReturn201AndLocation() throws Exception {
         UUID id = UUID.randomUUID();
 
-        var req = new CreatePatientRequest("Luan Jao", "luan@gmail.com", "+573001112233");
-        var resp = new PatientResponse(id, "Luan Jao", "luan@gmail.com", "+573001112233", PatientStatus.ACTIVE);
+        var req = new CreatePatientRequest("Luan Jao", "luan@gmail.com", "+573001112233", "1045678901");
+        var resp = new PatientResponse(id, "Luan Jao", "luan@gmail.com", "+573001112233", "1045678901", PatientStatus.ACTIVE);
 
         when(service.create(any())).thenReturn(resp);
 
@@ -62,7 +62,7 @@ class PatientControllerTest {
         UUID id = UUID.randomUUID();
 
         when(service.findById(id))
-                .thenReturn(new PatientResponse(id, "Karla Zapata", "kzapata@gmail.com", "+573002223344", PatientStatus.ACTIVE));
+                .thenReturn(new PatientResponse(id, "Karla Zapata", "kzapata@gmail.com", "+573002223344", "1023456789", PatientStatus.ACTIVE));
 
         mvc.perform(get("/api/patients/" + id))
                 .andExpect(status().isOk())
@@ -86,7 +86,7 @@ class PatientControllerTest {
         UUID id = UUID.randomUUID();
 
         var resp = List.of(
-                new PatientResponse(id, "Carlos Rodríguez", "carlos@gmail.com", "+573003334455", PatientStatus.ACTIVE)
+                new PatientResponse(id, "Carlos Rodríguez", "carlos@gmail.com", "+573003334455", "1001234567", PatientStatus.ACTIVE)
         );
 
         when(service.findAll()).thenReturn(resp);
@@ -104,6 +104,7 @@ class PatientControllerTest {
                 "Laura Jimenez",
                 "laujimenez@gmail.com",
                 "+573004445566",
+                "1056789012",
                 PatientStatus.INACTIVE
         );
 
@@ -112,6 +113,7 @@ class PatientControllerTest {
                 "Laura Jimenez",
                 "laujimenez@gmail.com",
                 "+573004445566",
+                "1056789012",
                 PatientStatus.INACTIVE
         );
 
@@ -129,7 +131,7 @@ class PatientControllerTest {
     void create_shouldReturn400WhenFieldsAreBlank() throws Exception {
         mvc.perform(post("/api/patients")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"fullName\":\"\",\"email\":\"not-an-email\",\"phone\":\"\"}"))
+                        .content("{\"fullName\":\"\",\"email\":\"not-an-email\",\"phone\":\"\",\"documentId\":\"\"}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.violations").isArray());

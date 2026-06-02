@@ -55,6 +55,7 @@ public class PatientServiceImpl implements PatientService {
         existing.setFullName(req.fullName());
         existing.setEmail(req.email());
         existing.setPhone(req.phone());
+        existing.setDocumentId(req.documentId());
         existing.setStatus(req.status());
         existing.setUpdatedAt(Instant.now());
         return PatientMapper.toResponse(patientRepository.save(existing));

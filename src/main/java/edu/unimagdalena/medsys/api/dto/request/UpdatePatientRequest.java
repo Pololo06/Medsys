@@ -6,5 +6,6 @@ public record UpdatePatientRequest(
         String fullName,
         String email,
         String phone,
+        String documentId,
         PatientStatus status
 ) {}
