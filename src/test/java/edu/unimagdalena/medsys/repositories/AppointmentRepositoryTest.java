@@ -57,6 +57,7 @@ class AppointmentRepositoryTest extends AbstractRepositoryIT {
                         .fullName("Carlos Torres")
                         .email("carlostorres" + Math.random() + "@gmail.com")
                         .phone("3000000000")
+                        .documentId("123456789")
                         .status(PatientStatus.ACTIVE)
                         .createdAt(Instant.now())
                         .updatedAt(Instant.now())

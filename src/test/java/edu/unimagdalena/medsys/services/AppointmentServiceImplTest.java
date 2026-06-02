@@ -290,7 +290,7 @@ class AppointmentServiceImplTest {
                 .startTime(futureStart).endTime(futureStart.plusMinutes(30))
                 .createdAt(Instant.now()).updatedAt(Instant.now()).build();
 
-        when(appointmentRepository.findById(apptId)).thenReturn(Optional.of(appt));
+        when(appointmentRepository.findByIdWithJoins(apptId)).thenReturn(Optional.of(appt));
         when(appointmentRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
         var result = appointmentService.confirm(apptId);
@@ -305,7 +305,7 @@ class AppointmentServiceImplTest {
         var appt = Appointment.builder().id(apptId).status(AppointmentStatus.CANCELLED)
                 .createdAt(Instant.now()).updatedAt(Instant.now()).build();
 
-        when(appointmentRepository.findById(apptId)).thenReturn(Optional.of(appt));
+        when(appointmentRepository.findByIdWithJoins(apptId)).thenReturn(Optional.of(appt));
 
         assertThatThrownBy(() -> appointmentService.confirm(apptId))
                 .isInstanceOf(BusinessException.class);
@@ -318,7 +318,7 @@ class AppointmentServiceImplTest {
         var appt = Appointment.builder().id(apptId).status(AppointmentStatus.COMPLETED)
                 .createdAt(Instant.now()).updatedAt(Instant.now()).build();
 
-        when(appointmentRepository.findById(apptId)).thenReturn(Optional.of(appt));
+        when(appointmentRepository.findByIdWithJoins(apptId)).thenReturn(Optional.of(appt));
 
         assertThatThrownBy(() -> appointmentService.confirm(apptId))
                 .isInstanceOf(BusinessException.class);
@@ -337,7 +337,7 @@ class AppointmentServiceImplTest {
                 .startTime(futureStart).endTime(futureStart.plusMinutes(30))
                 .createdAt(Instant.now()).updatedAt(Instant.now()).build();
 
-        when(appointmentRepository.findById(apptId)).thenReturn(Optional.of(appt));
+        when(appointmentRepository.findByIdWithJoins(apptId)).thenReturn(Optional.of(appt));
         when(appointmentRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
         var result = appointmentService.cancel(apptId, new CancelAppointmentRequest("Paciente no puede asistir"));
@@ -355,7 +355,7 @@ class AppointmentServiceImplTest {
                 .startTime(futureStart).endTime(futureStart.plusMinutes(30))
                 .createdAt(Instant.now()).updatedAt(Instant.now()).build();
 
-        when(appointmentRepository.findById(apptId)).thenReturn(Optional.of(appt));
+        when(appointmentRepository.findByIdWithJoins(apptId)).thenReturn(Optional.of(appt));
         when(appointmentRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
         var result = appointmentService.cancel(apptId, new CancelAppointmentRequest("Reagendar"));
@@ -379,7 +379,7 @@ class AppointmentServiceImplTest {
         var appt = Appointment.builder().id(apptId).status(AppointmentStatus.COMPLETED)
                 .createdAt(Instant.now()).updatedAt(Instant.now()).build();
 
-        when(appointmentRepository.findById(apptId)).thenReturn(Optional.of(appt));
+        when(appointmentRepository.findByIdWithJoins(apptId)).thenReturn(Optional.of(appt));
 
         assertThatThrownBy(() -> appointmentService.cancel(apptId, new CancelAppointmentRequest("motivo")))
                 .isInstanceOf(BusinessException.class);
@@ -392,7 +392,7 @@ class AppointmentServiceImplTest {
         var appt = Appointment.builder().id(apptId).status(AppointmentStatus.NO_SHOW)
                 .createdAt(Instant.now()).updatedAt(Instant.now()).build();
 
-        when(appointmentRepository.findById(apptId)).thenReturn(Optional.of(appt));
+        when(appointmentRepository.findByIdWithJoins(apptId)).thenReturn(Optional.of(appt));
 
         assertThatThrownBy(() -> appointmentService.cancel(apptId, new CancelAppointmentRequest("motivo")))
                 .isInstanceOf(BusinessException.class);
@@ -412,7 +412,7 @@ class AppointmentServiceImplTest {
                 .startTime(pastStart).endTime(pastStart.plusMinutes(30))
                 .createdAt(Instant.now()).updatedAt(Instant.now()).build();
 
-        when(appointmentRepository.findById(apptId)).thenReturn(Optional.of(appt));
+        when(appointmentRepository.findByIdWithJoins(apptId)).thenReturn(Optional.of(appt));
         when(appointmentRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
         var result = appointmentService.complete(apptId, new CompleteAppointmentRequest("Atención sin novedades"));
@@ -430,7 +430,7 @@ class AppointmentServiceImplTest {
                 .endTime(LocalDateTime.now().plusHours(3))
                 .createdAt(Instant.now()).updatedAt(Instant.now()).build();
 
-        when(appointmentRepository.findById(apptId)).thenReturn(Optional.of(appt));
+        when(appointmentRepository.findByIdWithJoins(apptId)).thenReturn(Optional.of(appt));
 
         assertThatThrownBy(() -> appointmentService.complete(apptId, new CompleteAppointmentRequest(null)))
                 .isInstanceOf(BusinessException.class)
@@ -446,7 +446,7 @@ class AppointmentServiceImplTest {
                 .endTime(LocalDateTime.now().plusMinutes(20))
                 .createdAt(Instant.now()).updatedAt(Instant.now()).build();
 
-        when(appointmentRepository.findById(apptId)).thenReturn(Optional.of(appt));
+        when(appointmentRepository.findByIdWithJoins(apptId)).thenReturn(Optional.of(appt));
 
         assertThatThrownBy(() -> appointmentService.complete(apptId, new CompleteAppointmentRequest(null)))
                 .isInstanceOf(BusinessException.class);
@@ -466,7 +466,7 @@ class AppointmentServiceImplTest {
                 .startTime(pastStart).endTime(pastStart.plusMinutes(30))
                 .createdAt(Instant.now()).updatedAt(Instant.now()).build();
 
-        when(appointmentRepository.findById(apptId)).thenReturn(Optional.of(appt));
+        when(appointmentRepository.findByIdWithJoins(apptId)).thenReturn(Optional.of(appt));
         when(appointmentRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
         var result = appointmentService.markNoShow(apptId);
@@ -483,7 +483,7 @@ class AppointmentServiceImplTest {
                 .endTime(LocalDateTime.now().plusHours(2))
                 .createdAt(Instant.now()).updatedAt(Instant.now()).build();
 
-        when(appointmentRepository.findById(apptId)).thenReturn(Optional.of(appt));
+        when(appointmentRepository.findByIdWithJoins(apptId)).thenReturn(Optional.of(appt));
 
         assertThatThrownBy(() -> appointmentService.markNoShow(apptId))
                 .isInstanceOf(BusinessException.class)
@@ -499,7 +499,7 @@ class AppointmentServiceImplTest {
                 .endTime(LocalDateTime.now().plusMinutes(25))
                 .createdAt(Instant.now()).updatedAt(Instant.now()).build();
 
-        when(appointmentRepository.findById(apptId)).thenReturn(Optional.of(appt));
+        when(appointmentRepository.findByIdWithJoins(apptId)).thenReturn(Optional.of(appt));
 
         assertThatThrownBy(() -> appointmentService.markNoShow(apptId))
                 .isInstanceOf(BusinessException.class);
@@ -513,7 +513,7 @@ class AppointmentServiceImplTest {
     @DisplayName("findById lanza ResourceNotFoundException si la cita no existe")
     void findById_notFound_throwsResourceNotFound() {
         var unknownId = UUID.randomUUID();
-        when(appointmentRepository.findById(unknownId)).thenReturn(Optional.empty());
+        when(appointmentRepository.findByIdWithJoins(unknownId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> appointmentService.findById(unknownId))
                 .isInstanceOf(ResourceNotFoundException.class);
