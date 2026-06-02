@@ -27,6 +27,12 @@ class AvailabilityControllerTest {
 
     @MockitoBean
     AvailabilityService service;
+    @MockitoBean
+    edu.unimagdalena.medsys.security.service.JwtService jwtService;
+    @MockitoBean
+    org.springframework.security.core.userdetails.UserDetailsService userDetailsService;
+
+
 
     @Test
     void getAvailableSlots_shouldReturn200WithSlots() throws Exception {

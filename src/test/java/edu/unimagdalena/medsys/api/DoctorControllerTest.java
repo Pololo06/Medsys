@@ -30,6 +30,12 @@ class DoctorControllerTest {
 
     @MockitoBean
     DoctorService service;
+    @MockitoBean
+    edu.unimagdalena.medsys.security.service.JwtService jwtService;
+    @MockitoBean
+    org.springframework.security.core.userdetails.UserDetailsService userDetailsService;
+
+
 
     @Test
     void create_shouldReturn201AndLocation() throws Exception {

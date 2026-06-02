@@ -34,6 +34,12 @@ class AppointmentControllerTest {
 
     @MockitoBean
     AppointmentService service;
+    @MockitoBean
+    edu.unimagdalena.medsys.security.service.JwtService jwtService;
+    @MockitoBean
+    org.springframework.security.core.userdetails.UserDetailsService userDetailsService;
+
+
 
     @Test
     void create_shouldReturn201AndLocation() throws Exception {
@@ -267,6 +273,50 @@ class AppointmentControllerTest {
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message")
                         .value("Doctor already has an appointment in that time slot"));
+    }
+
+    @Test
+    void create_shouldReturn409WhenOfficeHasOverlap() throws Exception {
+        var req = new CreateAppointmentRequest(
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                LocalDateTime.now().plusDays(1)
+        );
+
+        when(service.create(any()))
+                .thenThrow(new edu.unimagdalena.medsys.exceptions.ConflictException(
+                        "Office is already occupied in that time slot"));
+
+        mvc.perform(post("/api/appointments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsString(req)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message")
+                        .value("Office is already occupied in that time slot"));
+    }
+
+    @Test
+    void create_shouldReturn409WhenPatientHasOverlap() throws Exception {
+        var req = new CreateAppointmentRequest(
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                LocalDateTime.now().plusDays(1)
+        );
+
+        when(service.create(any()))
+                .thenThrow(new edu.unimagdalena.medsys.exceptions.ConflictException(
+                        "Patient already has an appointment in that time slot"));
+
+        mvc.perform(post("/api/appointments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsString(req)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message")
+                        .value("Patient already has an appointment in that time slot"));
     }
 
     @Test
