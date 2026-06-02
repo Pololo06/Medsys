@@ -1,0 +1,112 @@
+package edu.unimagdalena.medsys.domain.repositories;
+
+import edu.unimagdalena.medsys.domain.entities.Appointment;
+import edu.unimagdalena.medsys.domain.enums.AppointmentStatus;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
+public interface AppointmentRepository extends JpaRepository<Appointment, UUID> {
+
+    List<Appointment> findByPatientIdAndStatus(UUID patientId, AppointmentStatus status);
+
+    List<Appointment> findByStartTimeBetween(LocalDateTime startTime, LocalDateTime endTime);
+
+    @Query("""
+    SELECT a.doctor.specialty.id, COUNT(a)
+    FROM Appointment a
+    WHERE a.status IN (
+        edu.unimagdalena.medsys.domain.enums.AppointmentStatus.CANCELLED,
+        edu.unimagdalena.medsys.domain.enums.AppointmentStatus.NO_SHOW
+    )
+    GROUP BY a.doctor.specialty.id
+    """)
+    List<Object[]> countCancelledAndNoShowBySpecialty();
+
+    @Query("""
+    SELECT a.doctor.id, a.doctor.fullName, COUNT(a)
+    FROM Appointment a
+    WHERE a.status = edu.unimagdalena.medsys.domain.enums.AppointmentStatus.COMPLETED
+    GROUP BY a.doctor.id, a.doctor.fullName
+    ORDER BY COUNT(a) DESC
+    """)
+    List<Object[]> doctorRanking();
+
+    @Query("""
+    SELECT a.patient.id, a.patient.fullName, COUNT(a)
+    FROM Appointment a
+    WHERE a.status = edu.unimagdalena.medsys.domain.enums.AppointmentStatus.NO_SHOW
+    AND a.startTime BETWEEN :start AND :end
+    GROUP BY a.patient.id, a.patient.fullName
+    ORDER BY COUNT(a) DESC
+    """)
+    List<Object[]> topNoShowPatients(LocalDateTime start, LocalDateTime end);
+
+    @Query("""
+    SELECT COUNT(a) > 0
+    FROM Appointment a
+    WHERE a.doctor.id = :doctorId
+    AND a.status IN (
+        edu.unimagdalena.medsys.domain.enums.AppointmentStatus.SCHEDULED,
+        edu.unimagdalena.medsys.domain.enums.AppointmentStatus.CONFIRMED
+    )
+    AND a.startTime < :end
+    AND a.endTime > :start
+    """)
+    boolean existsDoctorOverlap(UUID doctorId, LocalDateTime start, LocalDateTime end);
+
+    @Query("""
+    SELECT COUNT(a) > 0
+    FROM Appointment a
+    WHERE a.office.id = :officeId
+    AND a.status IN (
+        edu.unimagdalena.medsys.domain.enums.AppointmentStatus.SCHEDULED,
+        edu.unimagdalena.medsys.domain.enums.AppointmentStatus.CONFIRMED
+    )
+    AND a.startTime < :end
+    AND a.endTime > :start
+    """)
+    boolean existsOfficeOverlap(UUID officeId, LocalDateTime start, LocalDateTime end);
+
+    @Query("""
+    SELECT COUNT(a) > 0
+    FROM Appointment a
+    WHERE a.patient.id = :patientId
+    AND a.status IN (
+        edu.unimagdalena.medsys.domain.enums.AppointmentStatus.SCHEDULED,
+        edu.unimagdalena.medsys.domain.enums.AppointmentStatus.CONFIRMED
+    )
+    AND a.startTime < :end
+    AND a.endTime > :start
+    """)
+    boolean existsPatientOverlap(UUID patientId, LocalDateTime start, LocalDateTime end);
+
+    @Query("""
+    SELECT a.office.id, a.office.name, COUNT(a)
+    FROM Appointment a
+    WHERE a.startTime BETWEEN :start AND :end
+    GROUP BY a.office.id, a.office.name
+    """)
+    List<Object[]> countAppointmentsByOffice(LocalDateTime start, LocalDateTime end);
+
+    @Query("""
+    SELECT a FROM Appointment a
+    WHERE a.doctor.id = :doctorId
+    AND a.status IN (
+        edu.unimagdalena.medsys.domain.enums.AppointmentStatus.SCHEDULED,
+        edu.unimagdalena.medsys.domain.enums.AppointmentStatus.CONFIRMED
+    )
+    AND a.startTime BETWEEN :start AND :end
+    """)
+    List<Appointment> findActiveAppointmentsByDoctorAndDay(UUID doctorId, LocalDateTime start, LocalDateTime end);
+
+    @Query("""
+    SELECT a FROM Appointment a
+    WHERE a.doctor.id = :doctorId
+    AND a.startTime BETWEEN :start AND :end
+    """)
+    List<Appointment> findAppointmentsByDoctorAndDay(UUID doctorId, LocalDateTime start, LocalDateTime end);
+}

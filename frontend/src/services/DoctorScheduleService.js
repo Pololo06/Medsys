@@ -1,0 +1,43 @@
+import { api } from './api';
+
+const DAY_MAP = {
+  LUN:   'MONDAY',
+  MAR:   'TUESDAY',
+  'MIÉ': 'WEDNESDAY',
+  JUE:   'THURSDAY',
+  VIE:   'FRIDAY',
+  'SÁB': 'SATURDAY',
+};
+
+const DAY_MAP_REVERSE = {
+  MONDAY:    'LUN',
+  TUESDAY:   'MAR',
+  WEDNESDAY: 'MIÉ',
+  THURSDAY:  'JUE',
+  FRIDAY:    'VIE',
+  SATURDAY:  'SÁB',
+};
+
+export async function getDoctorSchedule(doctorId) {
+  const data = await api.get(`/doctors/${doctorId}/schedules`);
+
+  const result = { LUN: [], MAR: [], 'MIÉ': [], JUE: [], VIE: [], 'SÁB': [] };
+  for (const slot of data) {
+    const dayKey = DAY_MAP_REVERSE[slot.day];
+    if (dayKey) {
+      result[dayKey].push({ id: slot.id, startTime: slot.startTime, endTime: slot.endTime });
+    }
+  }
+  for (const key of Object.keys(result)) {
+    result[key].sort((a, b) => a.startTime.localeCompare(b.startTime));
+  }
+  return result;
+}
+
+export async function createDoctorSchedule(doctorId, day, startTime, endTime) {
+  return await api.post(`/doctors/${doctorId}/schedules`, {
+    day: DAY_MAP[day],
+    startTime,
+    endTime,
+  });
+}

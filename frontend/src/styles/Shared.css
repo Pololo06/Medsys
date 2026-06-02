@@ -1,0 +1,71 @@
+/* --- LAYOUT SHARED --- */
+.layout-wrapper {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background: var(--bg-app);
+}
+
+.layout-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+}
+
+.layout-main {
+    flex: 1;
+    padding: 28px 28px;
+    overflow-y: auto;
+    animation: slideInLeft 0.2s ease;
+}
+
+/* --- CONFIRM DIALOG SHARED --- */
+.confirm-modal {
+    max-width: 400px;
+}
+
+.confirm-modal-body {
+    padding: 28px 28px 20px;
+}
+
+.confirm-content-wrapper {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.confirm-icon-container {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    flex-shrink: 0;
+    border-width: 1px;
+    border-style: solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.confirm-title {
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+}
+
+.confirm-message {
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* Variante Warning añadida para limpiar la lógica ternaria del JSX */
+.btn-warning {
+    background: rgba(251,191,36,0.1);
+    color: #d97706;
+    border: 1px solid rgba(251,191,36,0.25);
+}
