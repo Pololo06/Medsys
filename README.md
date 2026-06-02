@@ -2,7 +2,8 @@
 Plataforma de Reservas de Consultorios Médicos Universitarios
 
 ## Integrantes
-Samuel David Polo Hernández
+Samuel David Polo Hernández,
+
 Natalia Sofía Arends Roa
 
 ## Stack
